@@ -1,0 +1,45 @@
+import { notFound } from "next/navigation";
+import { requireUser } from "@/lib/auth";
+import { getResumeById } from "@/lib/resume-service";
+import { SiteHeader } from "@/components/layout/site-header";
+import { ResumeEditor } from "@/components/builder/resume-editor";
+import { getUserPlan } from "@/lib/ai/quota";
+import { createClient } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
+
+export default async function BuilderPage({ params }: { params: Promise<{ resumeId: string }> }) {
+  const { resumeId } = await params;
+  const user = await requireUser();
+  const resume = await getResumeById(resumeId, user.id);
+
+  if (!resume) notFound();
+
+  const plan = await getUserPlan(user.id);
+
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("cancel_at_period_end, current_period_end")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const scheduledCancellation =
+    !!profile?.cancel_at_period_end &&
+    !!profile?.current_period_end &&
+    new Date(profile.current_period_end).getTime() > Date.now();
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <SiteHeader />
+      <main className="mx-auto max-w-7xl px-6 py-8">
+        <ResumeEditor
+          resume={resume}
+          initialPlan={plan}
+          scheduledCancellation={scheduledCancellation}
+          currentPeriodEnd={profile?.current_period_end ?? null}
+        />
+      </main>
+    </div>
+  );
+}

@@ -1,0 +1,36 @@
+Phase 14 — Launch Readiness
+
+This version adds:
+- Privacy Policy page
+- Terms of Service page
+- Contact page
+- Footer links to legal/support pages
+- Simple launch metadata
+- Basic Vercel config file
+
+Before going live:
+1. Replace placeholder brand name in .env.local:
+   NEXT_PUBLIC_APP_NAME=
+   NEXT_PUBLIC_COMPANY_NAME=
+   NEXT_PUBLIC_SUPPORT_EMAIL=
+2. Review Privacy / Terms text
+3. Set production domain
+4. Configure Vercel environment variables
+5. Switch Stripe from test to live when ready
+6. Add your real support email
+
+Suggested deployment flow:
+1. Create GitHub repo
+2. Push latest version
+3. Import repo into Vercel
+4. Add environment variables in Vercel
+5. Deploy
+6. Test auth, AI rewrite, Stripe checkout, Stripe webhook, and legal pages
+
+Current launch pages:
+- /
+- /pricing
+- /templates
+- /privacy
+- /terms
+- /contact
