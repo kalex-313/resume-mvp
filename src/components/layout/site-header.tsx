@@ -6,42 +6,45 @@ export async function SiteHeader() {
   const { data } = await supabase.auth.getUser();
   const user = data.user;
 
-  const appName = process.env.NEXT_PUBLIC_APP_NAME || "CVForge";
-
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        
-        {/* LOGO */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center">
           <img
             src="/logo.png"
             alt="CVForge"
-            className="h-8 w-8 object-contain"
+            className="h-10 w-auto object-contain"
           />
-          <span className="text-lg font-semibold text-slate-900">
-            {appName}
-          </span>
         </Link>
 
-        {/* NAV */}
         <nav className="flex items-center gap-6 text-sm text-slate-600">
-          <Link href="/templates">Templates</Link>
-          <Link href="/pricing">Pricing</Link>
+          <Link href="/templates" className="hover:text-slate-900">
+            Templates
+          </Link>
+          <Link href="/pricing" className="hover:text-slate-900">
+            Pricing
+          </Link>
 
           {user ? (
             <>
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/dashboard" className="hover:text-slate-900">
+                Dashboard
+              </Link>
               <form action="/auth/signout" method="post">
-                <button className="border px-3 py-2 rounded-xl">
+                <button className="rounded-xl border border-slate-300 px-3 py-2 text-slate-700 hover:bg-slate-50">
                   Logout
                 </button>
               </form>
             </>
           ) : (
             <>
-              <Link href="/auth/login">Login</Link>
-              <Link href="/auth/signup" className="bg-blue-600 text-white px-3 py-2 rounded-xl">
+              <Link href="/auth/login" className="hover:text-slate-900">
+                Login
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="rounded-xl bg-brand-600 px-3 py-2 text-white"
+              >
                 Sign up
               </Link>
             </>
