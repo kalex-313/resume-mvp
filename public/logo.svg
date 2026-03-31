@@ -1,0 +1,28 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3B82F6"></stop>
+      <stop offset="100%" stop-color="#2563EB"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded -->
+  <rect width="256" height="256" rx="48" fill="url(#grad)"></rect>
+
+  <!-- C shape -->
+  <path d="M180 70 
+           A60 60 0 1 0 180 186 
+           L160 170 
+           A40 40 0 1 1 160 86 
+           Z" fill="white"></path>
+
+  <!-- V shape -->
+  <path d="M90 80 
+           L128 170 
+           L166 80 
+           L146 80 
+           L128 130 
+           L110 80 
+           Z" fill="white"></path>
+
+</svg>
