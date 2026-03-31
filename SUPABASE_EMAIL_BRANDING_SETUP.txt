@@ -1,0 +1,20 @@
+ENV VALUES TO ADD OR UPDATE
+
+NEXT_PUBLIC_APP_NAME=YourBrandName
+NEXT_PUBLIC_LOGO_PATH=/logo-mark.svg
+NEXT_PUBLIC_SITE_URL=https://YOUR-REAL-VERCEL-DOMAIN
+
+SUPABASE EMAIL BRANDING QUICK GUIDE
+
+1. Go to Supabase Dashboard
+2. Authentication
+3. Email
+4. Templates
+5. Edit:
+   - Confirm signup
+   - Magic link
+   - Reset password
+6. Replace default wording with your brand name
+7. For non-Supabase sending:
+   - open SMTP Settings
+   - configure your own sender provider
