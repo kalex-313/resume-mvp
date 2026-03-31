@@ -13,7 +13,7 @@ export async function SiteHeader() {
           <img
             src="/logo.png"
             alt="CVForge"
-            className="h-16 w-auto object-contain"
+            className="h-20 w-auto object-contain"
           />
         </Link>
 
