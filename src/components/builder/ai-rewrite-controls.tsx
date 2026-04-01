@@ -2,27 +2,33 @@
 
 import { useState } from "react";
 
-type Props = {
-  section: "summary" | "bullet";
+type Quota = {
+  plan: "free" | "pro";
+  used: number;
+  limit: number | null;
+  remaining: number | null;
+};
+
+export function AIRewriteControls({
+  section,
+  resumeId,
+  getText,
+  onApply,
+  onQuotaUpdate,
+}: {
+  section: string;
   resumeId: string;
   getText: () => string;
   onApply: (value: string) => void;
-  onQuotaUpdate?: (quota: {
-    plan: "free" | "pro";
-    used: number;
-    limit: number | null;
-    remaining: number | null;
-  }) => void;
-};
-
-export function AIRewriteControls({ section, resumeId, getText, onApply, onQuotaUpdate }: Props) {
+  onQuotaUpdate?: (quota: Quota | null) => void;
+}) {
   const [loading, setLoading] = useState(false);
 
-  async function handleRewrite(mode: "professional" | "concise") {
+  async function runRewrite() {
     const text = getText().trim();
 
     if (!text) {
-      alert("Please enter some text first.");
+      alert("Add some text before using AI rewrite.");
       return;
     }
 
@@ -32,56 +38,47 @@ export function AIRewriteControls({ section, resumeId, getText, onApply, onQuota
       const response = await fetch("/api/ai/rewrite", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text,
-          mode,
+          resumeId,
           section,
-          resumeId
-        })
+          text,
+        }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        if (data?.quota && onQuotaUpdate) {
-          onQuotaUpdate(data.quota);
+        if (data?.code === "FREE_QUOTA_EXHAUSTED") {
+          alert("You have used all free AI rewrites for this month. Upgrade to Pro for unlimited access.");
+        } else {
+          alert(data?.error || "AI rewrite failed.");
         }
-        throw new Error(data.error || "Rewrite failed");
+        onQuotaUpdate?.(data?.quota || null);
+        return;
       }
 
-      onApply(data.text || "");
-
-      if (data?.quota && onQuotaUpdate) {
-        onQuotaUpdate(data.quota);
+      if (typeof data.text === "string" && data.text.trim()) {
+        onApply(data.text.trim());
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Rewrite failed";
-      alert(message);
+
+      onQuotaUpdate?.(data?.quota || null);
+    } catch {
+      alert("AI rewrite failed.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <button
-        type="button"
-        onClick={() => handleRewrite("professional")}
-        disabled={loading}
-        className="rounded-lg border border-brand-600 px-3 py-2 text-xs font-medium text-brand-600 disabled:opacity-50"
-      >
-        {loading ? "Rewriting..." : "AI Rewrite"}
-      </button>
-      <button
-        type="button"
-        onClick={() => handleRewrite("concise")}
-        disabled={loading}
-        className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 disabled:opacity-50"
-      >
-        Make Concise
-      </button>
-    </div>
+    <button
+      type="button"
+      onClick={runRewrite}
+      disabled={loading}
+      className="rounded-lg border border-blue-300 px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50"
+    >
+      {loading ? "Rewriting..." : "AI Rewrite"}
+    </button>
   );
 }

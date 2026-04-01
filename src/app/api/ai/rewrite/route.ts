@@ -1,72 +1,122 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { rewriteWithGemini } from "@/lib/ai/gemini";
-import { getAiQuotaStatus, recordAiUsageEvent } from "@/lib/ai/quota";
-import { checkAiRateLimit, logAiRequest } from "@/lib/ai/anti-abuse";
+import { getStripeServer } from "@/lib/stripe";
+import { canUseAIRewrite, getAIQuotaStatus, logAIUsageEvent } from "@/lib/ai/quota";
 
-export async function POST(request: NextRequest) {
+export const dynamic = "force-dynamic";
+
+function buildPrompt(text: string, section: string) {
+  return `Rewrite the following ${section} content into stronger, professional resume language.
+Keep it concise, truthful, and ATS-friendly.
+
+Content:
+${text}`;
+}
+
+export async function POST(request: Request) {
   const supabase = await createClient();
-  const { data: authData, error: userError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
 
-  if (userError || !authData.user) {
+  if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const body = await request.json();
   const text = String(body.text || "").trim();
-  const mode = body.mode === "concise" ? "concise" : "professional";
-  const section = body.section === "bullet" ? "bullet" : "summary";
-  const resumeId = body.resumeId ? String(body.resumeId) : null;
-  const actionType = section === "summary" ? `summary_${mode}` : `bullet_${mode}`;
+  const section = String(body.section || "resume");
 
   if (!text) {
-    return NextResponse.json({ error: "Missing text" }, { status: 400 });
+    return NextResponse.json({ error: "Missing text to rewrite." }, { status: 400 });
   }
 
-  const quota = await getAiQuotaStatus(authData.user.id);
+  const gate = await canUseAIRewrite(user.id);
 
-  if (!quota.allowed) {
+  if (!gate.allowed) {
+    await logAIUsageEvent({
+      userId: user.id,
+      success: false,
+      blockedReason: "free_quota_exhausted",
+      inputText: text.slice(0, 500),
+    });
+
     return NextResponse.json(
       {
-        error: "You have reached your monthly AI rewrite limit on the Free plan. Please upgrade to Pro.",
-        quota
+        error: "You have used all free AI rewrites for this month. Upgrade to Pro for unlimited access.",
+        code: "FREE_QUOTA_EXHAUSTED",
+        quota: gate.quota,
       },
       { status: 403 }
     );
   }
 
-  const rateLimit = await checkAiRateLimit(authData.user.id);
-
-  if (!rateLimit.allowed) {
-    return NextResponse.json(
-      {
-        error: rateLimit.dailyAllowed
-          ? "Too many AI rewrite requests right now. Please wait a minute and try again."
-          : "You have reached the daily AI safety limit. Please try again later.",
-        quota,
-        rateLimit: rateLimit.stats
-      },
-      { status: 429 }
-    );
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: "Missing GEMINI_API_KEY" }, { status: 500 });
   }
 
   try {
-    const result = await rewriteWithGemini(text, mode, section);
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: buildPrompt(text, section) }],
+            },
+          ],
+        }),
+      }
+    );
 
-    await Promise.all([
-      recordAiUsageEvent(authData.user.id, actionType, resumeId),
-      logAiRequest(authData.user.id, actionType, rateLimit.ipHash, rateLimit.userAgent)
-    ]);
+    const data = await response.json();
 
-    const updatedQuota = await getAiQuotaStatus(authData.user.id);
+    const rewritten =
+      data?.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("")?.trim() || "";
+
+    if (!response.ok || !rewritten) {
+      await logAIUsageEvent({
+        userId: user.id,
+        success: false,
+        blockedReason: "provider_error",
+        inputText: text.slice(0, 500),
+      });
+
+      return NextResponse.json(
+        { error: "AI rewrite failed. Please try again." },
+        { status: 500 }
+      );
+    }
+
+    await logAIUsageEvent({
+      userId: user.id,
+      success: true,
+      inputText: text.slice(0, 500),
+    });
+
+    const quota = await getAIQuotaStatus(user.id);
 
     return NextResponse.json({
-      ...result,
-      quota: updatedQuota,
-      rateLimit: rateLimit.stats
+      text: rewritten,
+      quota,
     });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Rewrite failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+  } catch {
+    await logAIUsageEvent({
+      userId: user.id,
+      success: false,
+      blockedReason: "request_failed",
+      inputText: text.slice(0, 500),
+    });
+
+    return NextResponse.json(
+      { error: "AI rewrite failed. Please try again." },
+      { status: 500 }
+    );
   }
 }
