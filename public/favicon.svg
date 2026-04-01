@@ -1,0 +1,11 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cvforgeBlue" x1="36" y1="28" x2="214" y2="222" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="52" fill="url(#cvforgeBlue)"/>
+  <path d="M181 73C170 58 152 48 131 48C90 48 58 80 58 128C58 176 90 208 131 208C151 208 169 198 181 183L160 167C153 176 143 181 131 181C107 181 89 159 89 128C89 97 107 75 131 75C143 75 153 80 160 89L181 73Z" fill="white"/>
+  <path d="M108 83L129 151L150 83H178L140 186H118L80 83H108Z" fill="white"/>
+</svg>
