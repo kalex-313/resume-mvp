@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getAiQuotaStatus } from "@/lib/ai/quota";
+import { getAIQuotaStatus } from "@/lib/ai/quota";
 
 export async function GET() {
   const supabase = await createClient();
@@ -10,6 +10,6 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const quota = await getAiQuotaStatus(authData.user.id);
+  const quota = await getAIQuotaStatus(authData.user.id);
   return NextResponse.json(quota);
 }
