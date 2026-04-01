@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Create job-ready resumes with AI-powered rewriting, strong templates, and polished PDF export.",
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
-    apple: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png" }],
     shortcut: ["/favicon.png"],
   },
 };
