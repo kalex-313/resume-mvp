@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: `${appName} — AI Resume Builder`,
   description: "Create job-ready resumes with AI-powered rewriting, strong templates, and polished PDF export.",
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-touch-icon.svg", type: "image/svg+xml" }],
-    shortcut: ["/favicon.svg"],
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/favicon.png", type: "image/png" }],
+    shortcut: ["/favicon.png"],
   },
 };
 
