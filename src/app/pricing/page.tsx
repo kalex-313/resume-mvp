@@ -55,9 +55,12 @@ export default async function PricingPage({ searchParams }: Props) {
             <p className="mb-3 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-600">
               Choose your plan
             </p>
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900">Upgrade only when you need stronger output</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+              Upgrade only when you need stronger output
+            </h1>
             <p className="mt-3 max-w-2xl text-slate-600">
-              Start free, explore the builder, then unlock PDF export, premium templates, and unlimited AI rewrite when you are ready.
+              Start free, test the workflow, then unlock stronger templates, unlimited AI rewriting,
+              and polished PDF export when you are ready to apply seriously.
             </p>
             <p className="mt-3 text-sm text-slate-500">
               Current plan: <span className="font-semibold">{proEnabled ? "Pro" : "Free"}</span>
@@ -68,7 +71,7 @@ export default async function PricingPage({ searchParams }: Props) {
 
         {params.upgrade === "success" ? (
           <div className="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-            Payment completed. If your plan does not update immediately, refresh in a moment.
+            Payment completed. Your Pro plan should activate shortly.
           </div>
         ) : null}
 
@@ -80,7 +83,8 @@ export default async function PricingPage({ searchParams }: Props) {
 
         {scheduledCancellation ? (
           <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            Your Pro plan is scheduled to cancel on <span className="font-semibold">{formatDate(profileStatus?.current_period_end || null)}</span>.
+            Your Pro plan is scheduled to cancel on{" "}
+            <span className="font-semibold">{formatDate(profileStatus?.current_period_end || null)}</span>.
             You still have Pro access until then.
           </div>
         ) : null}
@@ -90,36 +94,52 @@ export default async function PricingPage({ searchParams }: Props) {
             <div className="mb-6">
               <p className="text-sm font-medium text-slate-500">Free</p>
               <h2 className="mt-2 text-3xl font-bold text-slate-900">$0</h2>
-              <p className="mt-2 text-sm text-slate-600">Good for testing the workflow and creating first drafts.</p>
+              <p className="mt-2 text-sm text-slate-600">
+                Try the basics before upgrading.
+              </p>
             </div>
-            <ul className="space-y-3 text-sm text-slate-600">
-              <li>Build resumes</li>
-              <li>Save drafts</li>
-              <li>Core templates</li>
-              <li>10 AI rewrites per month</li>
-              <li>PDF export locked</li>
+
+            <ul className="space-y-3 text-sm text-slate-700">
+              <li>✔ Build resumes</li>
+              <li>✔ Save drafts</li>
+              <li>❌ Limited AI rewrites</li>
+              <li>❌ PDF export locked</li>
+              <li>❌ Premium templates locked</li>
             </ul>
           </div>
 
-          <div className={["rounded-3xl bg-white p-8 shadow-sm", proEnabled ? "border-2 border-brand-600" : "border border-slate-200"].join(" ")}>
-            <div className="mb-6 flex items-center justify-between gap-3">
+          <div
+            className={[
+              "rounded-3xl bg-white p-8 shadow-sm",
+              proEnabled ? "border-2 border-brand-600" : "border border-slate-200",
+            ].join(" ")}
+          >
+            <div className="mb-6 flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-medium text-brand-600">Pro</p>
-                <h2 className="mt-2 text-3xl font-bold text-slate-900">Best for active job search</h2>
-                <p className="mt-2 text-sm text-slate-600">Unlock stronger presentation, faster editing, and cleaner export flow.</p>
+                <h2 className="mt-2 text-3xl font-bold text-slate-900">
+                  Get hired faster with stronger resumes
+                </h2>
+                <p className="mt-2 text-sm text-slate-600">
+                  Unlock better presentation, faster editing, and cleaner export flow.
+                </p>
               </div>
               <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
-                Most popular
+                Most Popular
               </span>
             </div>
 
-            <ul className="space-y-3 text-sm text-slate-600">
-              <li>All templates</li>
-              <li>Unlimited AI rewrite</li>
-              <li>PDF export unlocked</li>
-              <li>Premium layouts</li>
-              <li>Stripe subscription management</li>
+            <ul className="space-y-3 text-sm text-slate-700">
+              <li>✔ Unlimited AI rewrite</li>
+              <li>✔ All premium templates</li>
+              <li>✔ Professional PDF export</li>
+              <li>✔ ATS-optimized formatting</li>
+              <li>✔ Faster editing workflow</li>
             </ul>
+
+            <p className="mt-4 text-xs text-slate-500">
+              Most users upgrade after creating their first serious resume.
+            </p>
 
             <div className="mt-6 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
               {proEnabled ? (
@@ -129,7 +149,7 @@ export default async function PricingPage({ searchParams }: Props) {
                   <p>You are currently on the Pro plan.</p>
                 )
               ) : (
-                <p>Upgrade to Pro when you want unlimited rewrite power and polished export-ready resumes.</p>
+                <p>Unlock Pro when you want unlimited rewrite power and polished export-ready resumes.</p>
               )}
             </div>
           </div>
