@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+const COOLDOWN_SECONDS = 60;
+
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,12 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (cooldown <= 0) return;
+    if (cooldown <= 0) {
+      setError((current) =>
+        current?.includes("Too many requests") ? null : current
+      );
+      return;
+    }
 
     const timer = setTimeout(() => {
       setCooldown((value) => value - 1);
@@ -47,8 +54,8 @@ export default function ForgotPasswordPage() {
         const raw = String(data?.error || "").toLowerCase();
 
         if (raw.includes("rate limit")) {
-          setCooldown(30);
-          setError("Too many requests. Please wait 30 seconds before trying again.");
+          setCooldown(COOLDOWN_SECONDS);
+          setError(`Too many requests. Please wait ${COOLDOWN_SECONDS} seconds before trying again.`);
         } else {
           setError(data?.error || "Could not send reset email.");
         }
@@ -56,8 +63,8 @@ export default function ForgotPasswordPage() {
         return;
       }
 
-      setMessage("If an account exists for this email, a reset link has been sent.");
-      setCooldown(30);
+      setMessage(`If an account exists for this email, a reset link has been sent. Please wait ${COOLDOWN_SECONDS} seconds before requesting another one.`);
+      setCooldown(COOLDOWN_SECONDS);
     } catch {
       setError("Could not send reset email.");
     } finally {
