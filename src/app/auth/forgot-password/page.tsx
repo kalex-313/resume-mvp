@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -69,9 +67,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <SiteHeader />
-      <main className="mx-auto max-w-md px-6 py-16">
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+      <main className="mx-auto flex min-h-screen max-w-md items-center px-6 py-16">
+        <div className="w-full rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <p className="mb-3 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-600">
             Forgot password
           </p>
@@ -130,7 +127,6 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
       </main>
-      <SiteFooter />
     </div>
   );
 }

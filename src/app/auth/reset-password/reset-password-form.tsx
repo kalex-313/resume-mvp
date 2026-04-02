@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -60,7 +61,7 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="w-full rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
       <p className="mb-3 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-600">
         Reset password
       </p>
@@ -120,6 +121,13 @@ export default function ResetPasswordForm() {
           {loading ? "Updating password..." : "Update password"}
         </button>
       </form>
+
+      <p className="mt-5 text-sm text-slate-600">
+        Back to{" "}
+        <Link href="/auth/login" className="font-medium text-brand-600">
+          login
+        </Link>
+      </p>
     </div>
   );
 }
