@@ -53,11 +53,11 @@ function sectionInstruction(section: RewriteSection) {
   }
 }
 
-export function buildRewritePrompt(params: {
-  text: string;
-  section: RewriteSection;
-  tone: RewriteTone;
-}) {
+export function buildRewritePrompt(
+  text: string,
+  section: RewriteSection,
+  tone: RewriteTone
+) {
   return `
 You are a professional resume writing assistant.
 
@@ -68,22 +68,23 @@ STRICT RULES:
 - Keep output clean (no explanations, no extra text)
 
 TASK:
-${sectionInstruction(params.section)}
+${sectionInstruction(section)}
 
 TONE:
-${toneInstruction(params.tone)}
+${toneInstruction(tone)}
 
 CONTENT:
-${params.text}
+${text}
 
 OUTPUT:
 Return only the rewritten content.
-`;
+`.trim();
 }
 
 export function sanitizeRewriteOutput(text: string) {
   return text
     .replace(/^```[a-z]*\n?/i, "")
-    .replace(/```$/, "")
+    .replace(/```$/i, "")
+    .replace(/^Here is the rewritten version:?\s*/i, "")
     .trim();
 }
