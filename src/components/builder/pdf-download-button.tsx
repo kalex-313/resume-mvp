@@ -1,8 +1,7 @@
+
 "use client";
 
 import { useState } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 export function PDFDownloadButton({
   targetId,
@@ -14,16 +13,36 @@ export function PDFDownloadButton({
   const [loading, setLoading] = useState(false);
 
   async function handleDownload() {
-    const element = document.getElementById(targetId);
-
-    if (!element) {
-      alert("Preview not found.");
-      return;
-    }
-
     setLoading(true);
 
     try {
+      const gate = await fetch("/api/pdf/export", {
+        method: "POST"
+      });
+
+      const gateData = await gate.json();
+
+      if (!gate.ok) {
+        if (gateData?.code === "PDF_LOCKED") {
+          window.location.href = "/upgrade";
+          return;
+        }
+
+        alert(gateData?.error || "Access denied.");
+        return;
+      }
+
+      // ✅ 原本 PDF logic（保留）
+      const element = document.getElementById(targetId);
+
+      if (!element) {
+        alert("Preview not found.");
+        return;
+      }
+
+      const html2canvas = (await import("html2canvas")).default;
+      const jsPDF = (await import("jspdf")).default;
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -40,31 +59,18 @@ export function PDFDownloadButton({
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const margin = 28;
-      const usableWidth = pdfWidth - margin * 2;
-      const usableHeight = pdfHeight - margin * 2;
 
       const ratio = Math.min(
-        usableWidth / canvas.width,
-        usableHeight / canvas.height
+        (pdfWidth - margin * 2) / canvas.width,
+        (pdfHeight - margin * 2) / canvas.height
       );
 
       const renderWidth = canvas.width * ratio;
       const renderHeight = canvas.height * ratio;
-      const x = (pdfWidth - renderWidth) / 2;
-      const y = margin;
 
-      pdf.addImage(imgData, "PNG", x, y, renderWidth, renderHeight);
+      pdf.addImage(imgData, "PNG", margin, margin, renderWidth, renderHeight);
 
-      pdf.setFontSize(9);
-      pdf.setTextColor(140, 140, 140);
-      pdf.text("Generated with Resume MVP Free Plan", pdfWidth - 180, pdfHeight - 14);
-
-      const safeFileName = (fileName || "resume")
-        .trim()
-        .replace(/[^a-zA-Z0-9-_ ]/g, "")
-        .replace(/\s+/g, "-");
-
-      pdf.save(`${safeFileName || "resume"}.pdf`);
+      pdf.save(`${fileName || "resume"}.pdf`);
     } catch {
       alert("Could not generate PDF.");
     } finally {
@@ -74,10 +80,9 @@ export function PDFDownloadButton({
 
   return (
     <button
-      type="button"
       onClick={handleDownload}
       disabled={loading}
-      className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
+      className="rounded-xl border border-slate-300 px-4 py-2 text-sm"
     >
       {loading ? "Generating PDF..." : "Download PDF"}
     </button>
