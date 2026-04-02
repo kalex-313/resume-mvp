@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import { requireUser } from "@/lib/auth";
-import { getResumeById } from "@/lib/resume-service";
 import { SiteHeader } from "@/components/layout/site-header";
-import { ResumeEditor } from "@/components/builder/resume-editor";
-import { getUserPlan } from "@/lib/ai/quota";
 import { createClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/auth";
+import { getUserPlan } from "@/lib/ai/quota";
+import { getResumeById } from "@/lib/resume-service";
+import { ResumeEditor } from "@/components/builder/resume-editor";
 import { QuotaBanner } from "@/components/common/quota-banner";
 
 export const dynamic = "force-dynamic";
@@ -12,11 +12,11 @@ export const dynamic = "force-dynamic";
 export default async function BuilderPage({
   params,
 }: {
-  params: { id: string };
+  params: { resumeId: string };
 }) {
-  const { id } = params;
+  const { resumeId } = params;
   const user = await requireUser();
-  const resume = await getResumeById(id, user.id);
+  const resume = await getResumeById(resumeId, user.id);
 
   if (!resume) notFound();
 
