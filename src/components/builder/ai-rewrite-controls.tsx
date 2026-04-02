@@ -1,13 +1,8 @@
+
 "use client";
 
 import { useState } from "react";
-
-type Quota = {
-  plan: "free" | "pro";
-  used: number;
-  limit: number | null;
-  remaining: number | null;
-};
+import { useRouter } from "next/navigation";
 
 export function AIRewriteControls({
   section,
@@ -20,9 +15,10 @@ export function AIRewriteControls({
   resumeId: string;
   getText: () => string;
   onApply: (value: string) => void;
-  onQuotaUpdate?: (quota: Quota | null) => void;
+  onQuotaUpdate?: (quota: any) => void;
 }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function runRewrite() {
     const text = getText().trim();
@@ -51,7 +47,7 @@ export function AIRewriteControls({
 
       if (!response.ok) {
         if (data?.code === "FREE_QUOTA_EXHAUSTED") {
-          alert("You have used all free AI rewrites for this month. Upgrade to Pro for unlimited access.");
+          router.push("/upgrade");
         } else {
           alert(data?.error || "AI rewrite failed.");
         }
@@ -59,8 +55,8 @@ export function AIRewriteControls({
         return;
       }
 
-      if (typeof data.text === "string" && data.text.trim()) {
-        onApply(data.text.trim());
+      if (typeof data.text === "string") {
+        onApply(data.text);
       }
 
       onQuotaUpdate?.(data?.quota || null);

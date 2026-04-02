@@ -5,13 +5,18 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { ResumeEditor } from "@/components/builder/resume-editor";
 import { getUserPlan } from "@/lib/ai/quota";
 import { createClient } from "@/lib/supabase/server";
+import { QuotaBanner } from "@/components/common/quota-banner";
 
 export const dynamic = "force-dynamic";
 
-export default async function BuilderPage({ params }: { params: Promise<{ resumeId: string }> }) {
-  const { resumeId } = await params;
+export default async function BuilderPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
   const user = await requireUser();
-  const resume = await getResumeById(resumeId, user.id);
+  const resume = await getResumeById(id, user.id);
 
   if (!resume) notFound();
 
@@ -33,6 +38,10 @@ export default async function BuilderPage({ params }: { params: Promise<{ resume
     <div className="min-h-screen bg-slate-50">
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
+        <div className="mb-4">
+          <QuotaBanner />
+        </div>
+
         <ResumeEditor
           resume={resume}
           initialPlan={plan}
