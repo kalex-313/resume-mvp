@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getStripeServer } from "@/lib/stripe";
-import { canUseAIRewrite, getAIQuotaStatus, logAIUsageEvent } from "@/lib/ai/quota";
+import {
+  canUseAIRewrite,
+  getAIQuotaStatus,
+  logAIUsageEvent,
+} from "@/lib/ai/quota";
+import {
+  buildRewritePrompt,
+  sanitizeRewriteOutput,
+  type RewriteSection,
+  type RewriteTone,
+} from "@/lib/ai/prompt";
 
 export const dynamic = "force-dynamic";
-
-function buildPrompt(text: string, section: string) {
-  return `Rewrite the following ${section} content into stronger, professional resume language.
-Keep it concise, truthful, and ATS-friendly.
-
-Content:
-${text}`;
-}
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -26,7 +27,8 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const text = String(body.text || "").trim();
-  const section = String(body.section || "resume");
+  const section = String(body.section || "resume") as RewriteSection;
+  const tone = String(body.tone || "balanced") as RewriteTone;
 
   if (!text) {
     return NextResponse.json({ error: "Missing text to rewrite." }, { status: 400 });
@@ -58,8 +60,11 @@ export async function POST(request: Request) {
   }
 
   try {
+    const prompt = buildRewritePrompt(text, section, tone);
+
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
+        apiKey,
       {
         method: "POST",
         headers: {
@@ -68,7 +73,7 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           contents: [
             {
-              parts: [{ text: buildPrompt(text, section) }],
+              parts: [{ text: prompt }],
             },
           ],
         }),
@@ -77,8 +82,12 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    const rewritten =
-      data?.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("")?.trim() || "";
+    const rawText =
+      data?.candidates?.[0]?.content?.parts
+        ?.map((part: { text?: string }) => part.text || "")
+        .join("") || "";
+
+    const rewritten = sanitizeRewriteOutput(rawText);
 
     if (!response.ok || !rewritten) {
       await logAIUsageEvent({
