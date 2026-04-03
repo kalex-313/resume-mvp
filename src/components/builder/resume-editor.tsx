@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -8,7 +9,6 @@ import { AIRewriteControls } from "./ai-rewrite-controls";
 import { PDFDownloadButton } from "./pdf-download-button";
 import { TemplateSelector } from "./template-selector";
 import { PDFLockedNote } from "./pdf-locked-note";
-import { AIQuotaBadge } from "./ai-quota-badge";
 
 function emptyExperience() {
   return {
@@ -37,6 +37,8 @@ type Quota = {
   limit: number | null;
   remaining: number | null;
 };
+
+const FREE_TEMPLATES = ["professional-blue", "minimal-clean", "ats-classic"];
 
 function formatDate(dateString: string | null) {
   if (!dateString) return "";
@@ -103,7 +105,17 @@ export function ResumeEditor({
         body: JSON.stringify({ title, template_id: templateId, content_json: content })
       });
 
-      if (!response.ok) throw new Error("Save failed");
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data?.code === "PREMIUM_TEMPLATE_LOCKED") {
+          alert("This template is available on the Pro plan.");
+          setTemplateId("professional-blue");
+          setSaveState("error");
+          return;
+        }
+        throw new Error("Save failed");
+      }
 
       setSaveState("saved");
       if (showAlert) {
@@ -180,6 +192,16 @@ export function ResumeEditor({
     setContent({ ...content, education: next.length > 0 ? next : [emptyEducation()] });
   }
 
+  function handleTemplateChange(nextTemplateId: string) {
+    if (initialPlan === "free" && !FREE_TEMPLATES.includes(nextTemplateId)) {
+      alert("This template is available on the Pro plan.");
+      window.location.href = "/upgrade";
+      return;
+    }
+
+    setTemplateId(nextTemplateId);
+  }
+
   return (
     <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -193,7 +215,7 @@ export function ResumeEditor({
             {pdfEnabled ? (
               <PDFDownloadButton targetId="resume-preview-export" fileName={title || "resume"} />
             ) : (
-              <a href="/pricing" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900">
+              <a href="/upgrade" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900">
                 Upgrade for PDF
               </a>
             )}
@@ -224,9 +246,11 @@ export function ResumeEditor({
           </div>
         ) : null}
 
-        <div className="mb-6">
-          <AIQuotaBadge quota={quota} />
-        </div>
+        {quota && quota.plan === "free" ? (
+          <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            Free plan: <span className="font-semibold">{quota.used} / {quota.limit}</span> AI rewrites used
+          </div>
+        ) : null}
 
         {!pdfEnabled ? (
           <div className="mb-6">
@@ -237,7 +261,7 @@ export function ResumeEditor({
         <div className="space-y-6">
           <section className="space-y-3">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Template</h2>
-            <TemplateSelector value={templateId} onChange={setTemplateId} />
+            <TemplateSelector value={templateId} onChange={handleTemplateChange} />
           </section>
 
           <section className="space-y-3">

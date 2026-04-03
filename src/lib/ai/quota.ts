@@ -1,3 +1,4 @@
+
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type UserPlan = "free" | "pro";
@@ -15,6 +16,7 @@ function getMonthRange() {
   const now = new Date();
   const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0));
   const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0));
+
   return {
     start: start.toISOString(),
     end: end.toISOString(),
@@ -48,7 +50,7 @@ export async function getAIQuotaStatus(userId: string): Promise<AIQuotaStatus> {
 
   const { start, end } = getMonthRange();
 
-  const { count } = await admin
+  const { count, error } = await admin
     .from("ai_usage_events")
     .select("*", { count: "exact", head: true })
     .eq("user_id", userId)
@@ -56,6 +58,10 @@ export async function getAIQuotaStatus(userId: string): Promise<AIQuotaStatus> {
     .eq("success", true)
     .gte("created_at", start)
     .lt("created_at", end);
+
+  if (error) {
+    console.error("AI quota count failed:", error.message);
+  }
 
   const used = count ?? 0;
   const remaining = Math.max(0, FREE_MONTHLY_LIMIT - used);
@@ -90,11 +96,15 @@ export async function logAIUsageEvent(params: {
 }) {
   const admin = createAdminClient();
 
-  await admin.from("ai_usage_events").insert({
+  const { error } = await admin.from("ai_usage_events").insert({
     user_id: params.userId,
     event_type: "ai_rewrite",
     success: params.success,
     blocked_reason: params.blockedReason ?? null,
     input_text: params.inputText ?? null,
   });
+
+  if (error) {
+    console.error("AI usage logging failed:", error.message);
+  }
 }

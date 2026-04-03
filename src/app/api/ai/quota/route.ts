@@ -17,5 +17,7 @@ export async function GET() {
   }
 
   const quota = await getAIQuotaStatus(user.id);
-  return NextResponse.json({ quota });
+
+  // return the raw quota object to match ResumeEditor state expectations
+  return NextResponse.json(quota);
 }
