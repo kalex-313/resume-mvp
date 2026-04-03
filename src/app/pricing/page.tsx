@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { createClient } from "@/lib/supabase/server";
@@ -15,6 +16,9 @@ type ProfileStatus = {
   current_period_end: string | null;
   subscription_status: string | null;
 };
+
+const PRO_PRICE_LABEL = "$9";
+const PRO_PRICE_PERIOD = "/month";
 
 function formatDate(dateString: string | null) {
   if (!dateString) return "";
@@ -93,7 +97,10 @@ export default async function PricingPage({ searchParams }: Props) {
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <div className="mb-6">
               <p className="text-sm font-medium text-slate-500">Free</p>
-              <h2 className="mt-2 text-3xl font-bold text-slate-900">$0</h2>
+              <div className="mt-2 flex items-end gap-1">
+                <h2 className="text-3xl font-bold text-slate-900">$0</h2>
+                <span className="pb-1 text-sm text-slate-500">/month</span>
+              </div>
               <p className="mt-2 text-sm text-slate-600">
                 Try the basics before upgrading.
               </p>
@@ -117,9 +124,13 @@ export default async function PricingPage({ searchParams }: Props) {
             <div className="mb-6 flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-medium text-brand-600">Pro</p>
-                <h2 className="mt-2 text-3xl font-bold text-slate-900">
+                <div className="mt-2 flex items-end gap-1">
+                  <h2 className="text-3xl font-bold text-slate-900">{PRO_PRICE_LABEL}</h2>
+                  <span className="pb-1 text-sm text-slate-500">{PRO_PRICE_PERIOD}</span>
+                </div>
+                <p className="mt-2 text-sm font-semibold text-slate-900">
                   Get hired faster with stronger resumes
-                </h2>
+                </p>
                 <p className="mt-2 text-sm text-slate-600">
                   Unlock better presentation, faster editing, and cleaner export flow.
                 </p>
@@ -152,6 +163,17 @@ export default async function PricingPage({ searchParams }: Props) {
                 <p>Unlock Pro when you want unlimited rewrite power and polished export-ready resumes.</p>
               )}
             </div>
+
+            {!user ? (
+              <div className="mt-6">
+                <Link
+                  href="/upgrade"
+                  className="inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-3 text-sm font-medium text-white hover:opacity-95"
+                >
+                  Start My Pro Plan
+                </Link>
+              </div>
+            ) : null}
           </div>
         </div>
       </main>
