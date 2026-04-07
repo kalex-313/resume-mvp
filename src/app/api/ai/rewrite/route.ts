@@ -30,6 +30,7 @@ export async function POST(request: Request) {
   const text = String(body.text || "").trim();
   const section = String(body.section || "resume") as RewriteSection;
   const tone = String(body.tone || "balanced") as RewriteTone;
+  const resumeId = body.resumeId ? String(body.resumeId) : null;
 
   if (!text) {
     return NextResponse.json({ error: "Missing text to rewrite." }, { status: 400 });
@@ -38,13 +39,6 @@ export async function POST(request: Request) {
   const gate = await canUseAIRewrite(user.id);
 
   if (!gate.allowed) {
-    await logAIUsageEvent({
-      userId: user.id,
-      success: false,
-      blockedReason: "free_quota_exhausted",
-      inputText: text.slice(0, 500),
-    });
-
     return NextResponse.json(
       {
         error: "You have used all free AI rewrites for this month. Upgrade to Pro for unlimited access.",
@@ -91,13 +85,6 @@ export async function POST(request: Request) {
     const rewritten = sanitizeRewriteOutput(rawText);
 
     if (!response.ok || !rewritten) {
-      await logAIUsageEvent({
-        userId: user.id,
-        success: false,
-        blockedReason: "provider_error",
-        inputText: text.slice(0, 500),
-      });
-
       return NextResponse.json(
         { error: "AI rewrite failed. Please try again." },
         { status: 500 }
@@ -106,8 +93,8 @@ export async function POST(request: Request) {
 
     await logAIUsageEvent({
       userId: user.id,
-      success: true,
-      inputText: text.slice(0, 500),
+      resumeId,
+      actionType: "ai_rewrite",
     });
 
     const quota = await getAIQuotaStatus(user.id);
@@ -117,13 +104,6 @@ export async function POST(request: Request) {
       quota,
     });
   } catch {
-    await logAIUsageEvent({
-      userId: user.id,
-      success: false,
-      blockedReason: "request_failed",
-      inputText: text.slice(0, 500),
-    });
-
     return NextResponse.json(
       { error: "AI rewrite failed. Please try again." },
       { status: 500 }

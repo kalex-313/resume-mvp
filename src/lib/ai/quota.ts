@@ -54,8 +54,7 @@ export async function getAIQuotaStatus(userId: string): Promise<AIQuotaStatus> {
     .from("ai_usage_events")
     .select("*", { count: "exact", head: true })
     .eq("user_id", userId)
-    .eq("event_type", "ai_rewrite")
-    .eq("success", true)
+    .eq("action_type", "ai_rewrite")
     .gte("created_at", start)
     .lt("created_at", end);
 
@@ -90,18 +89,15 @@ export async function canUseAIRewrite(userId: string) {
 
 export async function logAIUsageEvent(params: {
   userId: string;
-  success: boolean;
-  blockedReason?: string | null;
-  inputText?: string | null;
+  resumeId?: string | null;
+  actionType?: string;
 }) {
   const admin = createAdminClient();
 
   const { error } = await admin.from("ai_usage_events").insert({
     user_id: params.userId,
-    event_type: "ai_rewrite",
-    success: params.success,
-    blocked_reason: params.blockedReason ?? null,
-    input_text: params.inputText ?? null,
+    resume_id: params.resumeId ?? null,
+    action_type: params.actionType ?? "ai_rewrite",
   });
 
   if (error) {

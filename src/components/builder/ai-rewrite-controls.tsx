@@ -1,7 +1,7 @@
+
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 type Quota = {
   plan: "free" | "pro";
@@ -78,7 +78,7 @@ export function AIRewriteControls({
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <select
         value={tone}
         onChange={(e) => setTone(e.target.value as Tone)}
@@ -98,7 +98,7 @@ export function AIRewriteControls({
         {loading ? "Rewriting..." : "AI Rewrite"}
       </button>
 
-      <div className="hidden text-[11px] text-slate-500 md:block">
+      <div className="text-[11px] leading-5 text-slate-500 md:self-center">
         AI improves wording only. Please review before use.
       </div>
     </div>
