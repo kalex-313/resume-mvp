@@ -307,10 +307,10 @@ export function ResumeEditor({
 
             {experienceOpen ? content.experience.map((exp, index) => (
               <div key={index} className="rounded-2xl border border-slate-200 p-4">
-                <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <p className="text-sm font-semibold text-slate-700">Experience #{index + 1}</p>
-                  <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-start lg:justify-end">
-                    <div className="min-w-0">
+                  <div className="w-full sm:w-auto">
+                    <div className="flex flex-col gap-3 sm:items-end">
                       <AIRewriteControls
                         section="bullet"
                         resumeId={resume.id}
@@ -318,10 +318,14 @@ export function ResumeEditor({
                         onApply={(value) => updateExperience(index, { bullets: value.split("\\n").filter(Boolean) })}
                         onQuotaUpdate={setQuota}
                       />
+                      <button
+                        type="button"
+                        onClick={() => removeExperience(index)}
+                        className="self-start rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600 sm:self-end"
+                      >
+                        Remove
+                      </button>
                     </div>
-                    <button type="button" onClick={() => removeExperience(index)} className="self-start rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600">
-                      Remove
-                    </button>
                   </div>
                 </div>
 
