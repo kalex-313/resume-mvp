@@ -1,38 +1,48 @@
-"use client";
+type TemplateSelectorProps = {
+  value: string;
+  onChange: (templateId: string) => void;
+  plan?: "free" | "pro";
+};
 
-const templates = [
-  { id: "professional-blue", name: "Professional Blue" },
-  { id: "minimal-clean", name: "Minimal Clean" },
-  { id: "ats-classic", name: "ATS Classic" },
-  { id: "modern-pro", name: "Modern Pro" },
-  { id: "minimal-pro", name: "Minimal Pro" },
-  { id: "tech-pro", name: "Tech Pro" }
+const TEMPLATE_OPTIONS = [
+  { id: "professional-blue", label: "Professional Blue", premium: false },
+  { id: "minimal-clean", label: "Minimal Clean", premium: false },
+  { id: "ats-classic", label: "ATS Classic", premium: false },
+  { id: "modern-pro", label: "Modern Pro", premium: true },
+  { id: "minimal-pro", label: "Minimal Pro", premium: true },
+  { id: "tech-pro", label: "Tech Pro", premium: true },
 ];
 
 export function TemplateSelector({
   value,
-  onChange
-}: {
-  value: string;
-  onChange: (value: string) => void;
-}) {
+  onChange,
+  plan = "pro",
+}: TemplateSelectorProps) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {templates.map((template) => {
-        const active = value === template.id;
+    <div className="flex flex-wrap gap-3">
+      {TEMPLATE_OPTIONS.map((template) => {
+        const selected = value === template.id;
+        const locked = template.premium && plan !== "pro";
+
         return (
           <button
             key={template.id}
             type="button"
             onClick={() => onChange(template.id)}
             className={[
-              "rounded-full border px-3 py-2 text-xs font-medium transition",
-              active
+              "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition",
+              selected
                 ? "border-brand-600 bg-brand-600 text-white"
-                : "border-slate-300 bg-white text-slate-700 hover:border-slate-400"
+                : locked
+                ? "border-slate-300 bg-slate-50 text-slate-400"
+                : "border-slate-300 bg-white text-slate-700 hover:border-brand-300 hover:bg-brand-50",
             ].join(" ")}
+            aria-pressed={selected}
           >
-            {template.name}
+            <span>{template.label}</span>
+            {locked ? (
+              <span className="text-xs font-medium">🔒 Pro</span>
+            ) : null}
           </button>
         );
       })}

@@ -260,7 +260,7 @@ export function ResumeEditor({
         <div className="space-y-6">
           <section className="space-y-3">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Template</h2>
-            <TemplateSelector value={templateId} onChange={handleTemplateChange} />
+            <TemplateSelector value={templateId} onChange={handleTemplateChange} plan={initialPlan} />
           </section>
 
           <section className="space-y-3">
