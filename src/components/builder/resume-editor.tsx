@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -74,7 +73,7 @@ export function ResumeEditor({
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    let active = true
+    let active = true;
 
     async function loadQuota() {
       try {
@@ -90,7 +89,7 @@ export function ResumeEditor({
     setHasHydrated(true);
 
     return () => {
-      active = false
+      active = false;
     };
   }, []);
 
@@ -280,7 +279,7 @@ export function ResumeEditor({
           </section>
 
           <section className="space-y-3">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Summary</h2>
               <AIRewriteControls
                 section="summary"
@@ -294,9 +293,9 @@ export function ResumeEditor({
           </section>
 
           <section className="space-y-4">
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 px-4 py-3">
+            <div className="flex flex-col gap-3 rounded-xl border border-slate-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Experience</h2>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button type="button" onClick={addExperience} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700">
                   Add Experience
                 </button>
@@ -308,17 +307,19 @@ export function ResumeEditor({
 
             {experienceOpen ? content.experience.map((exp, index) => (
               <div key={index} className="rounded-2xl border border-slate-200 p-4">
-                <div className="mb-3 flex items-center justify-between gap-3">
+                <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                   <p className="text-sm font-semibold text-slate-700">Experience #{index + 1}</p>
-                  <div className="flex items-center gap-2">
-                    <AIRewriteControls
-                      section="bullet"
-                      resumeId={resume.id}
-                      getText={() => exp.bullets.join("\n")}
-                      onApply={(value) => updateExperience(index, { bullets: value.split("\n").filter(Boolean) })}
-                      onQuotaUpdate={setQuota}
-                    />
-                    <button type="button" onClick={() => removeExperience(index)} className="rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600">
+                  <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-start lg:justify-end">
+                    <div className="min-w-0">
+                      <AIRewriteControls
+                        section="bullet"
+                        resumeId={resume.id}
+                        getText={() => exp.bullets.join("\\n")}
+                        onApply={(value) => updateExperience(index, { bullets: value.split("\\n").filter(Boolean) })}
+                        onQuotaUpdate={setQuota}
+                      />
+                    </div>
+                    <button type="button" onClick={() => removeExperience(index)} className="self-start rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600">
                       Remove
                     </button>
                   </div>
@@ -332,15 +333,15 @@ export function ResumeEditor({
                   <input className="rounded-xl border border-slate-300 px-4 py-2.5 md:col-span-2" placeholder="End Date" value={exp.endDate} onChange={(e) => updateExperience(index, { endDate: e.target.value })} />
                 </div>
 
-                <textarea className="mt-3 min-h-28 w-full rounded-xl border border-slate-300 px-4 py-3" value={exp.bullets.join("\n")} onChange={(e) => updateExperience(index, { bullets: e.target.value.split("\n").filter(Boolean) })} placeholder="One bullet per line" />
+                <textarea className="mt-3 min-h-28 w-full rounded-xl border border-slate-300 px-4 py-3" value={exp.bullets.join("\\n")} onChange={(e) => updateExperience(index, { bullets: e.target.value.split("\\n").filter(Boolean) })} placeholder="One bullet per line" />
               </div>
             )) : null}
           </section>
 
           <section className="space-y-4">
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 px-4 py-3">
+            <div className="flex flex-col gap-3 rounded-xl border border-slate-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Education</h2>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button type="button" onClick={addEducation} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700">
                   Add Education
                 </button>
