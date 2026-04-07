@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -78,11 +77,11 @@ export function AIRewriteControls({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
       <select
         value={tone}
         onChange={(e) => setTone(e.target.value as Tone)}
-        className="rounded-lg border border-slate-300 px-2 py-2 text-xs text-slate-700"
+        className="min-w-[120px] rounded-lg border border-slate-300 px-2 py-2 text-xs text-slate-700"
       >
         <option value="concise">Concise</option>
         <option value="balanced">Balanced</option>
@@ -98,7 +97,7 @@ export function AIRewriteControls({
         {loading ? "Rewriting..." : "AI Rewrite"}
       </button>
 
-      <div className="text-[11px] leading-5 text-slate-500 md:self-center">
+      <div className="basis-full text-[11px] leading-5 text-slate-500 sm:basis-auto sm:max-w-[210px]">
         AI improves wording only. Please review before use.
       </div>
     </div>

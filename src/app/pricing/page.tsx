@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { createClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/ai/quota";
 import { UpgradeButtons } from "@/components/pricing/upgrade-buttons";
+import { ATSFriendlyNote } from "@/components/common/ats-friendly-note";
 
 export const dynamic = "force-dynamic";
 
@@ -53,16 +54,16 @@ export default async function PricingPage({ searchParams }: Props) {
   return (
     <div className="min-h-screen bg-slate-50">
       <SiteHeader />
-      <main className="mx-auto max-w-5xl px-6 py-14">
-        <div className="mb-8 flex items-start justify-between gap-4">
+      <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-14">
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="mb-3 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-600">
               Choose your plan
             </p>
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
               Upgrade only when you need stronger output
             </h1>
-            <p className="mt-3 max-w-2xl text-slate-600">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
               Start free, test the workflow, then unlock stronger templates, unlimited AI rewriting,
               and polished PDF export when you are ready to apply seriously.
             </p>
@@ -94,7 +95,7 @@ export default async function PricingPage({ searchParams }: Props) {
         ) : null}
 
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="mb-6">
               <p className="text-sm font-medium text-slate-500">Free</p>
               <div className="mt-2 flex items-end gap-1">
@@ -117,7 +118,7 @@ export default async function PricingPage({ searchParams }: Props) {
 
           <div
             className={[
-              "rounded-3xl bg-white p-8 shadow-sm",
+              "rounded-3xl bg-white p-6 shadow-sm sm:p-8",
               proEnabled ? "border-2 border-brand-600" : "border border-slate-200",
             ].join(" ")}
           >
@@ -175,6 +176,10 @@ export default async function PricingPage({ searchParams }: Props) {
               </div>
             ) : null}
           </div>
+        </div>
+
+        <div className="mt-8">
+          <ATSFriendlyNote />
         </div>
       </main>
       <SiteFooter />
