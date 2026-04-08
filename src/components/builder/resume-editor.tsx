@@ -378,7 +378,7 @@ export function ResumeEditor({
 
           <section className="space-y-3">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Skills</h2>
-            <input className="w-full rounded-xl border border-slate-300 px-4 py-2.5" value={skillsText} onChange={(e) => setContent({ ...content, skills: e.target.value.split(",").map((item) => item.trim()).filter(Boolean) })} placeholder="Excel, Customer Service, Inventory Control" />
+            <input className="w-full rounded-xl border border-slate-300 px-4 py-2.5" value={skillsText} onChange={(e) => setContent({ ...content, skills: e.target.value.split(/[,.，．‵`\n]/).map((item) => item.trim()).filter(Boolean) })} placeholder="Excel, Customer Service, Inventory Control" />
           </section>
         </div>
       </div>
