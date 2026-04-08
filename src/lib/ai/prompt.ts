@@ -62,9 +62,16 @@ You are a professional resume editor.
 TASK:
 ${sectionInstruction(section)}
 
-LANGUAGE RULES:
-- Keep the output in the SAME language as the input
-- Do NOT translate unless the input itself is bilingual
+LANGUAGE LOCK RULES:
+- Keep the output in the EXACT SAME language as the input
+- Never translate the input into another language
+- If the input is written in English, output in English
+- If the input is written in Simplified Chinese, output in Simplified Chinese
+- If the input is written in Traditional Chinese, output in Traditional Chinese
+- If the input contains Traditional Chinese words such as "旺角", "專業", "經驗", or "履歷", keep using Traditional Chinese
+- Do NOT convert Chinese into Japanese
+- Do NOT convert Chinese into Korean
+- Do NOT romanize names or places unless the input already does so
 - If the input is bilingual, preserve that bilingual style naturally
 
 STRICT RULES:
