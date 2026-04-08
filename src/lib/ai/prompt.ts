@@ -11,45 +11,43 @@ export type RewriteSection =
 function toneInstruction(tone: RewriteTone) {
   if (tone === "concise") {
     return `
-- Reduce the content length by approximately 30–40%
-- Remove redundant phrases and repeated ideas
-- Keep only the most impactful and essential information
-- Use shorter, direct sentences
-- Avoid filler words and unnecessary descriptions
+- Reduce unnecessary wording by roughly 20–30% when possible
+- Keep the original meaning and confidence level
+- Prefer simpler and shorter phrasing
+- Do not remove important facts already stated
 `;
   }
 
   if (tone === "detailed") {
     return `
-- Expand the content slightly with clearer context and flow
-- Combine related ideas into smoother, more professional sentences
-- Clarify responsibilities and impact WITHOUT adding new facts
-- Use slightly longer and more descriptive wording
-- Maintain a strong professional resume tone
+- Add clarity and smoother flow without changing the original meaning
+- Keep the same level of confidence as the input
+- Make the wording slightly fuller, but still resume-friendly
+- Do not add achievements, claims, or stronger implications
 `;
   }
 
   return `
-- Maintain a balanced professional resume tone
-- Keep clarity, readability, and conciseness
-- Avoid unnecessary repetition
+- Keep a balanced professional tone
+- Improve clarity and readability without changing meaning
+- Avoid exaggeration and unnecessary embellishment
 `;
 }
 
 function sectionInstruction(section: RewriteSection) {
   switch (section) {
     case "summary":
-      return "Rewrite this professional summary into 2–4 concise, high-quality sentences.";
+      return "Rewrite this professional summary into cleaner, more professional resume language.";
     case "bullet":
-      return "Rewrite these resume bullet points with stronger action verbs and clearer impact. Use strong verbs like Optimized, Improved, Coordinated, Streamlined.";
+      return "Rewrite these resume bullet points with clearer action and readability while keeping the original meaning.";
     case "experience":
-      return "Rewrite this work experience entry into clearer, more professional language while keeping factual accuracy.";
+      return "Rewrite this work experience entry into clearer, more professional language while keeping it truthful.";
     case "education":
-      return "Rewrite this education section for clarity and professional formatting.";
+      return "Rewrite this education section for clarity and consistency.";
     case "skills":
-      return "Rewrite this skills section to be concise and well-structured.";
+      return "Rewrite this skills section into clearer, ATS-friendly wording without changing the listed skills.";
     default:
-      return "Rewrite this resume content to improve clarity, impact, and professionalism.";
+      return "Rewrite this resume content to improve clarity, consistency, and professionalism.";
   }
 }
 
@@ -59,25 +57,42 @@ export function buildRewritePrompt(
   tone: RewriteTone
 ) {
   return `
-You are a professional resume writing assistant.
-
-STRICT RULES:
-- Do NOT add new facts
-- Do NOT invent numbers, metrics, or achievements
-- Only improve wording and clarity
-- Keep output clean (no explanations, no extra text)
+You are a professional resume editor.
 
 TASK:
 ${sectionInstruction(section)}
 
+LANGUAGE RULES:
+- Keep the output in the SAME language as the input
+- Do NOT translate unless the input itself is bilingual
+- If the input is bilingual, preserve that bilingual style naturally
+
+STRICT RULES:
+- Do NOT add new facts
+- Do NOT invent achievements, numbers, metrics, or outcomes
+- Do NOT make the person sound more senior, more experienced, or more accomplished than the input says
+- Keep the same meaning, same level of confidence, and same factual scope as the original text
+- Prefer polishing over rewriting from scratch
+
+STYLE RULES:
+- Make the text clearer, more natural, and more professional
+- Keep it ATS-friendly and easy to scan
+- Use simple and direct wording
+- Avoid overblown corporate language
+- Avoid introducing phrases like "commitment to excellence" unless the input already expresses that idea
+
 TONE:
 ${toneInstruction(tone)}
 
-CONTENT:
-${text}
+OUTPUT RULES:
+- Return only the rewritten content
+- Do NOT add quotation marks
+- Do NOT add headings unless they already exist
+- Do NOT add explanations
+- Do NOT add introductory phrases like "Here is the rewritten version"
 
-OUTPUT:
-Return only the rewritten content.
+INPUT:
+${text}
 `.trim();
 }
 

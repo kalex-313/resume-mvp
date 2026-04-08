@@ -37,11 +37,117 @@ type Quota = {
   remaining: number | null;
 };
 
+type ParsedDate = {
+  month: string;
+  year: string;
+  present: boolean;
+};
+
 const FREE_TEMPLATES = ["professional-blue", "minimal-clean", "ats-classic"];
+
+const MONTH_OPTIONS = [
+  "",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+const CURRENT_YEAR = new Date().getFullYear();
+const YEAR_OPTIONS = Array.from({ length: 56 }, (_, index) =>
+  String(CURRENT_YEAR + 2 - index)
+);
 
 function formatDate(dateString: string | null) {
   if (!dateString) return "";
   return new Date(dateString).toLocaleDateString();
+}
+
+function parseStoredDate(value: string): ParsedDate {
+  const raw = String(value || "").trim();
+
+  if (!raw) {
+    return { month: "", year: "", present: false };
+  }
+
+  if (/^present$/i.test(raw)) {
+    return { month: "", year: "", present: true };
+  }
+
+  const isoMonthMatch = raw.match(/^(\d{4})-(\d{2})$/);
+  if (isoMonthMatch) {
+    const year = isoMonthMatch[1];
+    const monthIndex = Number(isoMonthMatch[2]);
+    return {
+      month: MONTH_OPTIONS[monthIndex] || "",
+      year,
+      present: false,
+    };
+  }
+
+  const monthYearMatch = raw.match(
+    /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{4})$/i
+  );
+  if (monthYearMatch) {
+    const month =
+      MONTH_OPTIONS.find(
+        (item) => item.toLowerCase() === monthYearMatch[1].toLowerCase()
+      ) || "";
+    return {
+      month,
+      year: monthYearMatch[2],
+      present: false,
+    };
+  }
+
+  const zhYearMatch = raw.match(/^(\d{4})年$/);
+  if (zhYearMatch) {
+    return { month: "", year: zhYearMatch[1], present: false };
+  }
+
+  const yearOnlyMatch = raw.match(/^(\d{4})$/);
+  if (yearOnlyMatch) {
+    return { month: "", year: yearOnlyMatch[1], present: false };
+  }
+
+  return { month: "", year: raw, present: false };
+}
+
+function formatStoredDate({
+  month,
+  year,
+  present,
+}: ParsedDate) {
+  if (present) return "Present";
+  if (month && year) return `${month} ${year}`;
+  if (year) return year;
+  return "";
+}
+
+function updateDateValue(
+  currentValue: string,
+  updates: Partial<ParsedDate>,
+  allowPresent = false
+) {
+  const parsed = parseStoredDate(currentValue);
+  const next: ParsedDate = {
+    ...parsed,
+    ...updates,
+  };
+
+  if (!allowPresent) {
+    next.present = false;
+  }
+
+  return formatStoredDate(next);
 }
 
 export function ResumeEditor({
@@ -244,7 +350,9 @@ export function ResumeEditor({
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-semibold">Resume Builder</h1>
-            <p className="mt-1 text-sm text-slate-500">Current plan: {planName}</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Current plan: {planName}
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -285,6 +393,11 @@ export function ResumeEditor({
           <span className="text-slate-400">Auto-save on</span>
         </div>
 
+        <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+          CVForge supports English, Chinese, and bilingual resume content. AI
+          rewrite keeps the same language as your input.
+        </div>
+
         {scheduledCancellation ? (
           <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             Your Pro plan is scheduled to end on{" "}
@@ -297,7 +410,10 @@ export function ResumeEditor({
 
         {quota && quota.plan === "free" ? (
           <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-            Free plan: <span className="font-semibold">{quota.used} / {quota.limit}</span>{" "}
+            Free plan:{" "}
+            <span className="font-semibold">
+              {quota.used} / {quota.limit}
+            </span>{" "}
             AI rewrites used
           </div>
         ) : null}
@@ -440,91 +556,196 @@ export function ResumeEditor({
             </div>
 
             {experienceOpen
-              ? content.experience.map((exp, index) => (
-                  <div key={index} className="rounded-2xl border border-slate-200 p-4">
-                    <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <p className="text-sm font-semibold text-slate-700">
-                        Experience #{index + 1}
-                      </p>
-                      <div className="w-full sm:w-auto">
-                        <div className="flex flex-col gap-3 sm:items-end">
-                          <AIRewriteControls
-                            section="bullet"
-                            resumeId={resume.id}
-                            getText={() => exp.bullets.join("\n")}
-                            onApply={(value) =>
-                              updateExperience(index, {
-                                bullets: value.split("\n").filter(Boolean),
-                              })
-                            }
-                            onQuotaUpdate={setQuota}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeExperience(index)}
-                            className="self-start rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600 sm:self-end"
-                          >
-                            Remove
-                          </button>
+              ? content.experience.map((exp, index) => {
+                  const parsedStartDate = parseStoredDate(exp.startDate);
+                  const parsedEndDate = parseStoredDate(exp.endDate);
+
+                  return (
+                    <div
+                      key={index}
+                      className="rounded-2xl border border-slate-200 p-4"
+                    >
+                      <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <p className="text-sm font-semibold text-slate-700">
+                          Experience #{index + 1}
+                        </p>
+                        <div className="w-full sm:w-auto">
+                          <div className="flex flex-col gap-3 sm:items-end">
+                            <AIRewriteControls
+                              section="bullet"
+                              resumeId={resume.id}
+                              getText={() => exp.bullets.join("\n")}
+                              onApply={(value) =>
+                                updateExperience(index, {
+                                  bullets: value.split("\n").filter(Boolean),
+                                })
+                              }
+                              onQuotaUpdate={setQuota}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeExperience(index)}
+                              className="self-start rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600 sm:self-end"
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="grid gap-3 md:grid-cols-2">
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="Company"
-                        value={exp.company}
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <input
+                          className="rounded-xl border border-slate-300 px-4 py-2.5"
+                          placeholder="Company"
+                          value={exp.company}
+                          onChange={(e) =>
+                            updateExperience(index, { company: e.target.value })
+                          }
+                        />
+                        <input
+                          className="rounded-xl border border-slate-300 px-4 py-2.5"
+                          placeholder="Role"
+                          value={exp.role}
+                          onChange={(e) =>
+                            updateExperience(index, { role: e.target.value })
+                          }
+                        />
+                        <input
+                          className="rounded-xl border border-slate-300 px-4 py-2.5"
+                          placeholder="Location"
+                          value={exp.location}
+                          onChange={(e) =>
+                            updateExperience(index, { location: e.target.value })
+                          }
+                        />
+
+                        <div className="rounded-xl border border-slate-300 px-4 py-2.5">
+                          <p className="mb-2 text-xs font-medium text-slate-500">
+                            Start date
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                              value={parsedStartDate.month}
+                              onChange={(e) =>
+                                updateExperience(index, {
+                                  startDate: updateDateValue(exp.startDate, {
+                                    month: e.target.value,
+                                  }),
+                                })
+                              }
+                            >
+                              {MONTH_OPTIONS.map((month) => (
+                                <option key={month || "none"} value={month}>
+                                  {month || "Month"}
+                                </option>
+                              ))}
+                            </select>
+
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                              value={parsedStartDate.year}
+                              onChange={(e) =>
+                                updateExperience(index, {
+                                  startDate: updateDateValue(exp.startDate, {
+                                    year: e.target.value,
+                                  }),
+                                })
+                              }
+                            >
+                              <option value="">Year</option>
+                              {YEAR_OPTIONS.map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-300 px-4 py-2.5 md:col-span-2">
+                          <div className="mb-2 flex items-center justify-between gap-3">
+                            <p className="text-xs font-medium text-slate-500">
+                              End date
+                            </p>
+                            <label className="flex items-center gap-2 text-xs text-slate-600">
+                              <input
+                                type="checkbox"
+                                checked={parsedEndDate.present}
+                                onChange={(e) =>
+                                  updateExperience(index, {
+                                    endDate: updateDateValue(
+                                      exp.endDate,
+                                      { present: e.target.checked },
+                                      true
+                                    ),
+                                  })
+                                }
+                              />
+                              Present
+                            </label>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+                              value={parsedEndDate.month}
+                              disabled={parsedEndDate.present}
+                              onChange={(e) =>
+                                updateExperience(index, {
+                                  endDate: updateDateValue(
+                                    exp.endDate,
+                                    { month: e.target.value },
+                                    true
+                                  ),
+                                })
+                              }
+                            >
+                              {MONTH_OPTIONS.map((month) => (
+                                <option key={month || "none"} value={month}>
+                                  {month || "Month"}
+                                </option>
+                              ))}
+                            </select>
+
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+                              value={parsedEndDate.year}
+                              disabled={parsedEndDate.present}
+                              onChange={(e) =>
+                                updateExperience(index, {
+                                  endDate: updateDateValue(
+                                    exp.endDate,
+                                    { year: e.target.value },
+                                    true
+                                  ),
+                                })
+                              }
+                            >
+                              <option value="">Year</option>
+                              {YEAR_OPTIONS.map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <textarea
+                        className="mt-3 min-h-28 w-full rounded-xl border border-slate-300 px-4 py-3"
+                        value={exp.bullets.join("\n")}
                         onChange={(e) =>
-                          updateExperience(index, { company: e.target.value })
+                          updateExperience(index, {
+                            bullets: e.target.value.split("\n").filter(Boolean),
+                          })
                         }
-                      />
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="Role"
-                        value={exp.role}
-                        onChange={(e) =>
-                          updateExperience(index, { role: e.target.value })
-                        }
-                      />
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="Location"
-                        value={exp.location}
-                        onChange={(e) =>
-                          updateExperience(index, { location: e.target.value })
-                        }
-                      />
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="Start Date"
-                        value={exp.startDate}
-                        onChange={(e) =>
-                          updateExperience(index, { startDate: e.target.value })
-                        }
-                      />
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5 md:col-span-2"
-                        placeholder="End Date"
-                        value={exp.endDate}
-                        onChange={(e) =>
-                          updateExperience(index, { endDate: e.target.value })
-                        }
+                        placeholder="One bullet per line"
                       />
                     </div>
-
-                    <textarea
-                      className="mt-3 min-h-28 w-full rounded-xl border border-slate-300 px-4 py-3"
-                      value={exp.bullets.join("\n")}
-                      onChange={(e) =>
-                        updateExperience(index, {
-                          bullets: e.target.value.split("\n").filter(Boolean),
-                        })
-                      }
-                      placeholder="One bullet per line"
-                    />
-                  </div>
-                ))
+                  );
+                })
               : null}
           </section>
 
@@ -552,66 +773,171 @@ export function ResumeEditor({
             </div>
 
             {educationOpen
-              ? content.education.map((edu, index) => (
-                  <div key={index} className="rounded-2xl border border-slate-200 p-4">
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <p className="text-sm font-semibold text-slate-700">
-                        Education #{index + 1}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => removeEducation(index)}
-                        className="rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600"
-                      >
-                        Remove
-                      </button>
-                    </div>
+              ? content.education.map((edu, index) => {
+                  const parsedStartDate = parseStoredDate(edu.startDate);
+                  const parsedEndDate = parseStoredDate(edu.endDate);
 
-                    <div className="grid gap-3 md:grid-cols-2">
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="School"
-                        value={edu.school}
+                  return (
+                    <div
+                      key={index}
+                      className="rounded-2xl border border-slate-200 p-4"
+                    >
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <p className="text-sm font-semibold text-slate-700">
+                          Education #{index + 1}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => removeEducation(index)}
+                          className="rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600"
+                        >
+                          Remove
+                        </button>
+                      </div>
+
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <input
+                          className="rounded-xl border border-slate-300 px-4 py-2.5"
+                          placeholder="School"
+                          value={edu.school}
+                          onChange={(e) =>
+                            updateEducation(index, { school: e.target.value })
+                          }
+                        />
+                        <input
+                          className="rounded-xl border border-slate-300 px-4 py-2.5"
+                          placeholder="Program"
+                          value={edu.program}
+                          onChange={(e) =>
+                            updateEducation(index, { program: e.target.value })
+                          }
+                        />
+
+                        <div className="rounded-xl border border-slate-300 px-4 py-2.5">
+                          <p className="mb-2 text-xs font-medium text-slate-500">
+                            Start date
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                              value={parsedStartDate.month}
+                              onChange={(e) =>
+                                updateEducation(index, {
+                                  startDate: updateDateValue(edu.startDate, {
+                                    month: e.target.value,
+                                  }),
+                                })
+                              }
+                            >
+                              {MONTH_OPTIONS.map((month) => (
+                                <option key={month || "none"} value={month}>
+                                  {month || "Month"}
+                                </option>
+                              ))}
+                            </select>
+
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                              value={parsedStartDate.year}
+                              onChange={(e) =>
+                                updateEducation(index, {
+                                  startDate: updateDateValue(edu.startDate, {
+                                    year: e.target.value,
+                                  }),
+                                })
+                              }
+                            >
+                              <option value="">Year</option>
+                              {YEAR_OPTIONS.map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-300 px-4 py-2.5">
+                          <div className="mb-2 flex items-center justify-between gap-3">
+                            <p className="text-xs font-medium text-slate-500">
+                              End date
+                            </p>
+                            <label className="flex items-center gap-2 text-xs text-slate-600">
+                              <input
+                                type="checkbox"
+                                checked={parsedEndDate.present}
+                                onChange={(e) =>
+                                  updateEducation(index, {
+                                    endDate: updateDateValue(
+                                      edu.endDate,
+                                      { present: e.target.checked },
+                                      true
+                                    ),
+                                  })
+                                }
+                              />
+                              Present
+                            </label>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+                              value={parsedEndDate.month}
+                              disabled={parsedEndDate.present}
+                              onChange={(e) =>
+                                updateEducation(index, {
+                                  endDate: updateDateValue(
+                                    edu.endDate,
+                                    { month: e.target.value },
+                                    true
+                                  ),
+                                })
+                              }
+                            >
+                              {MONTH_OPTIONS.map((month) => (
+                                <option key={month || "none"} value={month}>
+                                  {month || "Month"}
+                                </option>
+                              ))}
+                            </select>
+
+                            <select
+                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+                              value={parsedEndDate.year}
+                              disabled={parsedEndDate.present}
+                              onChange={(e) =>
+                                updateEducation(index, {
+                                  endDate: updateDateValue(
+                                    edu.endDate,
+                                    { year: e.target.value },
+                                    true
+                                  ),
+                                })
+                              }
+                            >
+                              <option value="">Year</option>
+                              {YEAR_OPTIONS.map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <textarea
+                        className="mt-3 min-h-20 w-full rounded-xl border border-slate-300 px-4 py-3"
+                        value={edu.details}
                         onChange={(e) =>
-                          updateEducation(index, { school: e.target.value })
+                          updateEducation(index, { details: e.target.value })
                         }
-                      />
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="Program"
-                        value={edu.program}
-                        onChange={(e) =>
-                          updateEducation(index, { program: e.target.value })
-                        }
-                      />
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="Start Date"
-                        value={edu.startDate}
-                        onChange={(e) =>
-                          updateEducation(index, { startDate: e.target.value })
-                        }
-                      />
-                      <input
-                        className="rounded-xl border border-slate-300 px-4 py-2.5"
-                        placeholder="End Date"
-                        value={edu.endDate}
-                        onChange={(e) =>
-                          updateEducation(index, { endDate: e.target.value })
-                        }
+                        placeholder="Extra details"
                       />
                     </div>
-
-                    <textarea
-                      className="mt-3 min-h-20 w-full rounded-xl border border-slate-300 px-4 py-3"
-                      value={edu.details}
-                      onChange={(e) =>
-                        updateEducation(index, { details: e.target.value })
-                      }
-                      placeholder="Extra details"
-                    />
-                  </div>
-                ))
+                  );
+                })
               : null}
           </section>
 
@@ -641,7 +967,11 @@ export function ResumeEditor({
       </div>
 
       <div className="lg:sticky lg:top-6 lg:self-start">
-        <ResumePreview title={title} templateId={templateId} content={content} />
+        <ResumePreview
+          title={title}
+          templateId={templateId}
+          content={content}
+        />
       </div>
     </div>
   );
