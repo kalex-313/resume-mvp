@@ -87,7 +87,6 @@ function normalizeBlock(block: HTMLElement, kind: "header" | "section") {
   block.style.boxShadow = "none";
   block.style.breakInside = "avoid";
   block.style.pageBreakInside = "avoid";
-  block.style.webkitColumnBreakInside = "avoid";
   block.style.overflowWrap = "anywhere";
   block.style.wordBreak = "break-word";
   block.style.backgroundClip = "padding-box";
