@@ -59,7 +59,6 @@ function createPage() {
 
   const inner = document.createElement("div");
   inner.style.width = "100%";
-  inner.style.height = "100%";
   inner.style.padding = `${PAGE_PADDING_PX}px`;
   inner.style.boxSizing = "border-box";
   inner.style.display = "flex";
@@ -126,6 +125,7 @@ function buildPaginatedDocument(target: HTMLElement, stage: HTMLDivElement) {
   );
 
   const pages: HTMLDivElement[] = [];
+  const pageInnerMaxHeight = A4_HEIGHT_PX - PAGE_PADDING_PX * 2;
 
   let currentPage = createPage();
   stage.appendChild(currentPage.page);
@@ -134,8 +134,6 @@ function buildPaginatedDocument(target: HTMLElement, stage: HTMLDivElement) {
   const headerClone = header.cloneNode(true) as HTMLElement;
   normalizeBlock(headerClone, "header");
   currentPage.inner.appendChild(headerClone);
-
-  const pageInnerMaxHeight = A4_HEIGHT_PX - PAGE_PADDING_PX * 2;
 
   for (const originalSection of sectionBlocks) {
     const sectionClone = originalSection.cloneNode(true) as HTMLElement;
@@ -155,6 +153,12 @@ function buildPaginatedDocument(target: HTMLElement, stage: HTMLDivElement) {
       pages.push(currentPage.page);
 
       currentPage.inner.appendChild(sectionClone);
+
+      const singleSectionHeight = currentPage.inner.scrollHeight;
+      if (singleSectionHeight > pageInnerMaxHeight) {
+        // Keep the oversize section on the page instead of losing it.
+        // It may still span visually, but this is safer than forcing blank pages.
+      }
     }
   }
 
