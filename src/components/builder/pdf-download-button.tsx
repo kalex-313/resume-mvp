@@ -10,9 +10,9 @@ type PDFDownloadButtonProps = {
 };
 
 const A4_WIDTH_PX = 794;
-const PDF_MARGIN_MM = 10;
-const PDF_PAGE_WIDTH_MM = 210;
-const PDF_PAGE_HEIGHT_MM = 297;
+const A4_HEIGHT_PX = 1123;
+const PAGE_PADDING_PX = 36;
+const PAGE_GAP_PX = 16;
 
 function sanitizeFileName(value: string) {
   return value
@@ -47,83 +47,134 @@ function createStageContainer() {
   return stage;
 }
 
-function prepareClone(target: HTMLElement) {
-  const clone = target.cloneNode(true) as HTMLElement;
-  clone.style.width = "100%";
-  clone.style.maxWidth = "100%";
-  clone.style.margin = "0";
-  clone.style.transform = "none";
-  clone.style.position = "static";
-  clone.style.left = "0";
-  clone.style.top = "0";
-  clone.style.right = "auto";
-  clone.style.boxShadow = "none";
-  clone.style.breakInside = "avoid";
+function createPage() {
+  const page = document.createElement("div");
+  page.style.width = `${A4_WIDTH_PX}px`;
+  page.style.height = `${A4_HEIGHT_PX}px`;
+  page.style.background = "#ffffff";
+  page.style.boxSizing = "border-box";
+  page.style.overflow = "hidden";
+  page.style.position = "relative";
+  page.style.pageBreakAfter = "always";
 
-  clone.querySelectorAll<HTMLElement>("*").forEach((node) => {
-    node.style.transform = "none";
-    node.style.scrollBehavior = "auto";
-  });
+  const inner = document.createElement("div");
+  inner.style.width = "100%";
+  inner.style.height = "100%";
+  inner.style.padding = `${PAGE_PADDING_PX}px`;
+  inner.style.boxSizing = "border-box";
+  inner.style.display = "flex";
+  inner.style.flexDirection = "column";
+  inner.style.gap = `${PAGE_GAP_PX}px`;
+  inner.style.background = "#ffffff";
 
-  return clone;
+  page.appendChild(inner);
+
+  return {
+    page,
+    inner,
+  };
 }
 
-function addCanvasToPdf(pdf: jsPDF, canvas: HTMLCanvasElement) {
-  const contentWidthMm = PDF_PAGE_WIDTH_MM - PDF_MARGIN_MM * 2;
-  const pageContentHeightMm = PDF_PAGE_HEIGHT_MM - PDF_MARGIN_MM * 2;
-  const pageSliceHeightPx = Math.floor(
-    (canvas.width * pageContentHeightMm) / contentWidthMm
+function normalizeBlock(block: HTMLElement, kind: "header" | "section") {
+  block.style.width = "100%";
+  block.style.maxWidth = "100%";
+  block.style.margin = "0";
+  block.style.transform = "none";
+  block.style.position = "static";
+  block.style.left = "0";
+  block.style.top = "0";
+  block.style.right = "auto";
+  block.style.boxShadow = "none";
+  block.style.breakInside = "avoid";
+  block.style.pageBreakInside = "avoid";
+  block.style.webkitColumnBreakInside = "avoid";
+  block.style.overflowWrap = "anywhere";
+  block.style.wordBreak = "break-word";
+  block.style.backgroundClip = "padding-box";
+
+  if (kind === "header") {
+    block.style.borderRadius = "16px";
+  }
+
+  block.querySelectorAll<HTMLElement>("*").forEach((node) => {
+    node.style.transform = "none";
+    node.style.scrollBehavior = "auto";
+    node.style.overflowWrap = "anywhere";
+    node.style.wordBreak = "break-word";
+  });
+}
+
+function buildPaginatedDocument(target: HTMLElement, stage: HTMLDivElement) {
+  const rootClone = target.cloneNode(true) as HTMLElement;
+  rootClone.style.width = `${A4_WIDTH_PX}px`;
+  rootClone.style.maxWidth = `${A4_WIDTH_PX}px`;
+  rootClone.style.margin = "0";
+  rootClone.style.padding = "0";
+  rootClone.style.background = "#ffffff";
+  rootClone.style.border = "0";
+  rootClone.style.borderRadius = "0";
+  rootClone.style.boxShadow = "none";
+
+  const header = rootClone.firstElementChild as HTMLElement | null;
+  const content = rootClone.children.item(1) as HTMLElement | null;
+
+  if (!header || !content) {
+    throw new Error("Could not prepare resume preview for PDF.");
+  }
+
+  const sectionBlocks = Array.from(content.children).filter(
+    (node): node is HTMLElement => node instanceof HTMLElement
   );
 
-  let renderedHeightPx = 0;
-  let pageIndex = 0;
+  const pages: HTMLDivElement[] = [];
 
-  while (renderedHeightPx < canvas.height) {
-    const sliceHeightPx = Math.min(
-      pageSliceHeightPx,
-      canvas.height - renderedHeightPx
-    );
+  let currentPage = createPage();
+  stage.appendChild(currentPage.page);
+  pages.push(currentPage.page);
 
-    const pageCanvas = document.createElement("canvas");
-    pageCanvas.width = canvas.width;
-    pageCanvas.height = sliceHeightPx;
+  const headerClone = header.cloneNode(true) as HTMLElement;
+  normalizeBlock(headerClone, "header");
+  currentPage.inner.appendChild(headerClone);
 
-    const pageContext = pageCanvas.getContext("2d");
-    if (!pageContext) {
-      throw new Error("Could not render PDF page");
+  const pageInnerMaxHeight = A4_HEIGHT_PX - PAGE_PADDING_PX * 2;
+
+  for (const originalSection of sectionBlocks) {
+    const sectionClone = originalSection.cloneNode(true) as HTMLElement;
+    normalizeBlock(sectionClone, "section");
+
+    currentPage.inner.appendChild(sectionClone);
+    const usedHeight = currentPage.inner.scrollHeight;
+
+    if (
+      usedHeight > pageInnerMaxHeight &&
+      currentPage.inner.children.length > 1
+    ) {
+      currentPage.inner.removeChild(sectionClone);
+
+      currentPage = createPage();
+      stage.appendChild(currentPage.page);
+      pages.push(currentPage.page);
+
+      currentPage.inner.appendChild(sectionClone);
     }
-
-    pageContext.drawImage(
-      canvas,
-      0,
-      renderedHeightPx,
-      canvas.width,
-      sliceHeightPx,
-      0,
-      0,
-      canvas.width,
-      sliceHeightPx
-    );
-
-    const pageImage = pageCanvas.toDataURL("image/png");
-    const pageHeightMm = (sliceHeightPx * contentWidthMm) / canvas.width;
-
-    if (pageIndex > 0) {
-      pdf.addPage();
-    }
-
-    pdf.addImage(
-      pageImage,
-      "PNG",
-      PDF_MARGIN_MM,
-      PDF_MARGIN_MM,
-      contentWidthMm,
-      pageHeightMm
-    );
-
-    renderedHeightPx += sliceHeightPx;
-    pageIndex += 1;
   }
+
+  return pages;
+}
+
+async function renderPageToCanvas(page: HTMLDivElement) {
+  return html2canvas(page, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+    logging: false,
+    width: A4_WIDTH_PX,
+    height: A4_HEIGHT_PX,
+    windowWidth: A4_WIDTH_PX,
+    windowHeight: A4_HEIGHT_PX,
+    scrollX: 0,
+    scrollY: 0,
+  });
 }
 
 export function PDFDownloadButton({
@@ -145,23 +196,12 @@ export function PDFDownloadButton({
     const stage = createStageContainer();
 
     try {
-      const clone = prepareClone(target);
-      stage.appendChild(clone);
       document.body.appendChild(stage);
+
+      const pages = buildPaginatedDocument(target, stage);
 
       await waitForFonts();
       await new Promise((resolve) => setTimeout(resolve, 120));
-
-      const canvas = await html2canvas(clone, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        width: A4_WIDTH_PX,
-        windowWidth: A4_WIDTH_PX,
-        scrollX: 0,
-        scrollY: 0,
-      });
 
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -170,7 +210,16 @@ export function PDFDownloadButton({
         compress: true,
       });
 
-      addCanvasToPdf(pdf, canvas);
+      for (let index = 0; index < pages.length; index += 1) {
+        const canvas = await renderPageToCanvas(pages[index]);
+        const image = canvas.toDataURL("image/png");
+
+        if (index > 0) {
+          pdf.addPage();
+        }
+
+        pdf.addImage(image, "PNG", 0, 0, 210, 297);
+      }
 
       const safeName = sanitizeFileName(fileName) || "resume";
       pdf.save(`${safeName}.pdf`);
