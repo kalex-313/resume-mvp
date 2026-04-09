@@ -99,6 +99,38 @@ export default async function DashboardPage() {
     redirect(`/builder/${data.id}`);
   }
 
+  async function deleteResumeAction(formData: FormData) {
+    "use server";
+
+    const resumeId = String(formData.get("resumeId") || "");
+
+    if (!resumeId) {
+      throw new Error("Missing resume id");
+    }
+
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      redirect("/auth/login");
+    }
+
+    const { error } = await supabase
+      .from("resumes")
+      .delete()
+      .eq("id", resumeId)
+      .eq("user_id", user.id);
+
+    if (error) {
+      throw new Error("Could not delete resume");
+    }
+
+    redirect("/dashboard");
+  }
+
   const { data: resumes, error } = await supabase
     .from("resumes")
     .select("id, user_id, title, template_id, content_json, created_at, updated_at")
@@ -172,12 +204,35 @@ export default async function DashboardPage() {
                     </p>
                   </div>
 
-                  <Link
-                    href={`/builder/${resume.id}`}
-                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-slate-700"
-                  >
-                    Edit resume
-                  </Link>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Link
+                      href={`/builder/${resume.id}`}
+                      className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-slate-700"
+                    >
+                      Edit resume
+                    </Link>
+
+                    <form
+                      action={deleteResumeAction}
+                      onSubmit={(event) => {
+                        const ok = window.confirm(
+                          "Delete this resume? This action cannot be undone."
+                        );
+
+                        if (!ok) {
+                          event.preventDefault();
+                        }
+                      }}
+                    >
+                      <input type="hidden" name="resumeId" value={resume.id} />
+                      <button
+                        type="submit"
+                        className="rounded-xl border border-red-300 px-4 py-2 text-sm text-red-600"
+                      >
+                        Delete
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
             ))}
