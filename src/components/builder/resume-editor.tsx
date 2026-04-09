@@ -2,7 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ResumeContent, ResumeRecord } from "@/types/resume";
+import type {
+  ResumeCertificationItem,
+  ResumeContent,
+  ResumeLanguageItem,
+  ResumeRecord,
+} from "@/types/resume";
 import { ResumePreview } from "./resume-preview";
 import { AIRewriteControls } from "./ai-rewrite-controls";
 import { PDFDownloadButton } from "./pdf-download-button";
@@ -27,6 +32,50 @@ function emptyEducation() {
     startDate: "",
     endDate: "",
     details: "",
+  };
+}
+
+function emptyLanguage(): ResumeLanguageItem {
+  return {
+    name: "",
+    level: "",
+  };
+}
+
+function emptyCertification(): ResumeCertificationItem {
+  return {
+    name: "",
+    issuer: "",
+    year: "",
+  };
+}
+
+function normalizeContent(value: ResumeRecord["content_json"]): ResumeContent {
+  return {
+    personal: {
+      fullName: value?.personal?.fullName || "",
+      email: value?.personal?.email || "",
+      phone: value?.personal?.phone || "",
+      location: value?.personal?.location || "",
+    },
+    summary: value?.summary || "",
+    experience:
+      value?.experience && value.experience.length > 0
+        ? value.experience
+        : [emptyExperience()],
+    education:
+      value?.education && value.education.length > 0
+        ? value.education
+        : [emptyEducation()],
+    skills: Array.isArray(value?.skills) ? value.skills : [],
+    languages:
+      Array.isArray(value?.languages) && value.languages.length > 0
+        ? value.languages
+        : [emptyLanguage()],
+    certifications:
+      Array.isArray(value?.certifications) && value.certifications.length > 0
+        ? value.certifications
+        : [emptyCertification()],
   };
 }
 
@@ -59,6 +108,16 @@ const MONTH_OPTIONS = [
   "Oct",
   "Nov",
   "Dec",
+];
+
+const LANGUAGE_LEVELS = [
+  "",
+  "Native",
+  "Fluent",
+  "Advanced",
+  "Intermediate",
+  "Conversational",
+  "Basic",
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -162,13 +221,15 @@ export function ResumeEditor({
   currentPeriodEnd?: string | null;
 }) {
   const router = useRouter();
+  const normalizedResumeContent = normalizeContent(resume.content_json);
+
   const [title, setTitle] = useState(resume.title);
   const [templateId, setTemplateId] = useState(
     resume.template_id || "professional-blue"
   );
-  const [content, setContent] = useState<ResumeContent>(resume.content_json);
+  const [content, setContent] = useState<ResumeContent>(normalizedResumeContent);
   const [skillsInput, setSkillsInput] = useState(
-    (resume.content_json?.skills || []).join(", ")
+    (normalizedResumeContent.skills || []).join(", ")
   );
   const [saving, setSaving] = useState(false);
   const [saveState, setSaveState] = useState<
@@ -177,6 +238,8 @@ export function ResumeEditor({
   const [quota, setQuota] = useState<Quota | null>(null);
   const [experienceOpen, setExperienceOpen] = useState(true);
   const [educationOpen, setEducationOpen] = useState(true);
+  const [languagesOpen, setLanguagesOpen] = useState(true);
+  const [certificationsOpen, setCertificationsOpen] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
 
   const skillsText = useMemo(() => content.skills.join(", "), [content.skills]);
@@ -298,6 +361,27 @@ export function ResumeEditor({
     });
   }
 
+  function updateLanguage(index: number, updates: Partial<ResumeLanguageItem>) {
+    setContent({
+      ...content,
+      languages: content.languages.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, ...updates } : item
+      ),
+    });
+  }
+
+  function updateCertification(
+    index: number,
+    updates: Partial<ResumeCertificationItem>
+  ) {
+    setContent({
+      ...content,
+      certifications: content.certifications.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, ...updates } : item
+      ),
+    });
+  }
+
   function addExperience() {
     setContent({
       ...content,
@@ -331,6 +415,40 @@ export function ResumeEditor({
     setContent({
       ...content,
       education: next.length > 0 ? next : [emptyEducation()],
+    });
+  }
+
+  function addLanguage() {
+    setContent({
+      ...content,
+      languages: [...content.languages, emptyLanguage()],
+    });
+    setLanguagesOpen(true);
+  }
+
+  function removeLanguage(index: number) {
+    const next = content.languages.filter((_, itemIndex) => itemIndex !== index);
+    setContent({
+      ...content,
+      languages: next.length > 0 ? next : [emptyLanguage()],
+    });
+  }
+
+  function addCertification() {
+    setContent({
+      ...content,
+      certifications: [...content.certifications, emptyCertification()],
+    });
+    setCertificationsOpen(true);
+  }
+
+  function removeCertification(index: number) {
+    const next = content.certifications.filter(
+      (_, itemIndex) => itemIndex !== index
+    );
+    setContent({
+      ...content,
+      certifications: next.length > 0 ? next : [emptyCertification()],
     });
   }
 
@@ -938,6 +1056,150 @@ export function ResumeEditor({
                     </div>
                   );
                 })
+              : null}
+          </section>
+
+          <section className="space-y-4">
+            <div className="flex flex-col gap-3 rounded-xl border border-slate-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Languages
+              </h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={addLanguage}
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+                >
+                  Add Language
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguagesOpen((v) => !v)}
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+                >
+                  {languagesOpen ? "Collapse" : "Expand"}
+                </button>
+              </div>
+            </div>
+
+            {languagesOpen
+              ? content.languages.map((item, index) => (
+                  <div key={index} className="rounded-2xl border border-slate-200 p-4">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <p className="text-sm font-semibold text-slate-700">
+                        Language #{index + 1}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => removeLanguage(index)}
+                        className="rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600"
+                      >
+                        Remove
+                      </button>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <input
+                        className="rounded-xl border border-slate-300 px-4 py-2.5"
+                        placeholder="Language"
+                        value={item.name}
+                        onChange={(e) =>
+                          updateLanguage(index, { name: e.target.value })
+                        }
+                      />
+                      <select
+                        className="rounded-xl border border-slate-300 px-4 py-2.5"
+                        value={item.level}
+                        onChange={(e) =>
+                          updateLanguage(index, { level: e.target.value })
+                        }
+                      >
+                        {LANGUAGE_LEVELS.map((level) => (
+                          <option key={level || "none"} value={level}>
+                            {level || "Level"}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                ))
+              : null}
+          </section>
+
+          <section className="space-y-4">
+            <div className="flex flex-col gap-3 rounded-xl border border-slate-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Certifications
+              </h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={addCertification}
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+                >
+                  Add Certification
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCertificationsOpen((v) => !v)}
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+                >
+                  {certificationsOpen ? "Collapse" : "Expand"}
+                </button>
+              </div>
+            </div>
+
+            {certificationsOpen
+              ? content.certifications.map((item, index) => (
+                  <div key={index} className="rounded-2xl border border-slate-200 p-4">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <p className="text-sm font-semibold text-slate-700">
+                        Certification #{index + 1}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => removeCertification(index)}
+                        className="rounded-lg border border-red-300 px-3 py-2 text-xs font-medium text-red-600"
+                      >
+                        Remove
+                      </button>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-3">
+                      <input
+                        className="rounded-xl border border-slate-300 px-4 py-2.5 md:col-span-2"
+                        placeholder="Certification or Qualification"
+                        value={item.name}
+                        onChange={(e) =>
+                          updateCertification(index, { name: e.target.value })
+                        }
+                      />
+                      <select
+                        className="rounded-xl border border-slate-300 px-4 py-2.5"
+                        value={item.year}
+                        onChange={(e) =>
+                          updateCertification(index, { year: e.target.value })
+                        }
+                      >
+                        <option value="">Year</option>
+                        {YEAR_OPTIONS.map((year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <input
+                      className="mt-3 w-full rounded-xl border border-slate-300 px-4 py-2.5"
+                      placeholder="Issuing organization"
+                      value={item.issuer}
+                      onChange={(e) =>
+                        updateCertification(index, { issuer: e.target.value })
+                      }
+                    />
+                  </div>
+                ))
               : null}
           </section>
 

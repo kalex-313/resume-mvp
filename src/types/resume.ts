@@ -1,29 +1,46 @@
+export type ResumePersonal = {
+  fullName: string;
+  email: string;
+  phone: string;
+  location: string;
+};
+
+export type ResumeExperienceItem = {
+  company: string;
+  role: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  bullets: string[];
+};
+
+export type ResumeEducationItem = {
+  school: string;
+  program: string;
+  startDate: string;
+  endDate: string;
+  details: string;
+};
+
+export type ResumeLanguageItem = {
+  name: string;
+  level: string;
+};
+
+export type ResumeCertificationItem = {
+  name: string;
+  issuer: string;
+  year: string;
+};
+
 export type ResumeContent = {
-  personal: {
-    fullName: string;
-    email: string;
-    phone: string;
-    location: string;
-    website: string;
-    linkedin: string;
-  };
+  personal: ResumePersonal;
   summary: string;
-  experience: Array<{
-    company: string;
-    role: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-    bullets: string[];
-  }>;
-  education: Array<{
-    school: string;
-    program: string;
-    startDate: string;
-    endDate: string;
-    details: string;
-  }>;
+  experience: ResumeExperienceItem[];
+  education: ResumeEducationItem[];
   skills: string[];
+  languages: ResumeLanguageItem[];
+  certifications: ResumeCertificationItem[];
 };
 
 export type ResumeRecord = {
@@ -31,8 +48,7 @@ export type ResumeRecord = {
   user_id: string;
   title: string;
   template_id: string;
-  language: string;
   content_json: ResumeContent;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 };

@@ -235,6 +235,61 @@ export function ResumePreview({
             </Section>
           ) : null}
 
+          {(content.languages || []).some(
+            (item) => String(item.name || "").trim() || String(item.level || "").trim()
+          ) ? (
+            <Section title="Languages" borderClass={theme.section}>
+              <div className="space-y-2">
+                {(content.languages || []).map((item, index) => {
+                  if (!String(item.name || "").trim() && !String(item.level || "").trim()) {
+                    return null;
+                  }
+
+                  return (
+                    <p
+                      key={`${item.name}-${index}`}
+                      className={`text-sm leading-6 text-slate-800 ${textWrapClass}`}
+                    >
+                      {[item.name, item.level].filter(Boolean).join(" — ")}
+                    </p>
+                  );
+                })}
+              </div>
+            </Section>
+          ) : null}
+
+          {(content.certifications || []).some(
+            (item) =>
+              String(item.name || "").trim() ||
+              String(item.issuer || "").trim() ||
+              String(item.year || "").trim()
+          ) ? (
+            <Section title="Certifications" borderClass={theme.section}>
+              <div className="space-y-3">
+                {(content.certifications || []).map((item, index) => {
+                  if (
+                    !String(item.name || "").trim() &&
+                    !String(item.issuer || "").trim() &&
+                    !String(item.year || "").trim()
+                  ) {
+                    return null;
+                  }
+
+                  return (
+                    <div key={`${item.name}-${index}`} className="space-y-1">
+                      <p className={`text-sm font-semibold text-black ${textWrapClass}`}>
+                        {item.name}
+                      </p>
+                      <p className={`text-sm text-slate-700 ${textWrapClass}`}>
+                        {[item.issuer, item.year].filter(Boolean).join(" • ")}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </Section>
+          ) : null}
+
           {(content.skills || []).length > 0 ? (
             <Section title="Skills" borderClass={theme.section}>
               <div className="flex flex-wrap gap-2">
