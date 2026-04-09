@@ -3,52 +3,9 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
-import type { ResumeContent, ResumeRecord } from "@/types/resume";
-
-function getDefaultContent(): ResumeContent {
-  return {
-    personal: {
-      fullName: "",
-      email: "",
-      phone: "",
-      location: "",
-    },
-    summary: "",
-    experience: [
-      {
-        company: "",
-        role: "",
-        location: "",
-        startDate: "",
-        endDate: "",
-        bullets: [""],
-      },
-    ],
-    education: [
-      {
-        school: "",
-        program: "",
-        startDate: "",
-        endDate: "",
-        details: "",
-      },
-    ],
-    skills: [],
-    languages: [
-      {
-        name: "",
-        level: "",
-      },
-    ],
-    certifications: [
-      {
-        name: "",
-        issuer: "",
-        year: "",
-      },
-    ],
-  };
-}
+import { DeleteResumeButton } from "@/components/dashboard/delete-resume-button";
+import { createResumeAction } from "./actions";
+import type { ResumeRecord } from "@/types/resume";
 
 function formatUpdatedAt(value?: string) {
   if (!value) return "—";
@@ -66,69 +23,6 @@ export default async function DashboardPage() {
 
   if (!user) {
     redirect("/auth/login");
-  }
-
-  async function createResumeAction() {
-    "use server";
-
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      redirect("/auth/login");
-    }
-
-    const { data, error } = await supabase
-      .from("resumes")
-      .insert({
-        user_id: user.id,
-        title: "Untitled Resume",
-        template_id: "professional-blue",
-        content_json: getDefaultContent(),
-      })
-      .select("id")
-      .single();
-
-    if (error || !data?.id) {
-      throw new Error("Could not create resume");
-    }
-
-    redirect(`/builder/${data.id}`);
-  }
-
-  async function deleteResumeAction(formData: FormData) {
-    "use server";
-
-    const resumeId = String(formData.get("resumeId") || "");
-
-    if (!resumeId) {
-      throw new Error("Missing resume id");
-    }
-
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      redirect("/auth/login");
-    }
-
-    const { error } = await supabase
-      .from("resumes")
-      .delete()
-      .eq("id", resumeId)
-      .eq("user_id", user.id);
-
-    if (error) {
-      throw new Error("Could not delete resume");
-    }
-
-    redirect("/dashboard");
   }
 
   const { data: resumes, error } = await supabase
@@ -212,26 +106,7 @@ export default async function DashboardPage() {
                       Edit resume
                     </Link>
 
-                    <form
-                      action={deleteResumeAction}
-                      onSubmit={(event) => {
-                        const ok = window.confirm(
-                          "Delete this resume? This action cannot be undone."
-                        );
-
-                        if (!ok) {
-                          event.preventDefault();
-                        }
-                      }}
-                    >
-                      <input type="hidden" name="resumeId" value={resume.id} />
-                      <button
-                        type="submit"
-                        className="rounded-xl border border-red-300 px-4 py-2 text-sm text-red-600"
-                      >
-                        Delete
-                      </button>
-                    </form>
+                    <DeleteResumeButton resumeId={resume.id} />
                   </div>
                 </div>
               </div>
