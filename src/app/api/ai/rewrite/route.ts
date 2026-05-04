@@ -8,11 +8,11 @@ import {
 } from "@/lib/ai/quota";
 import {
   buildRewritePrompt,
-  sanitizeRewriteOutput,
   type RewriteSection,
   type RewriteTone,
 } from "@/lib/ai/prompt";
 import { checkAiRateLimit, logAiRequest } from "@/lib/ai/anti-abuse";
+import { rewriteWithAIProviders } from "@/lib/ai/providers";
 
 export const dynamic = "force-dynamic";
 
@@ -64,47 +64,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: "Missing GEMINI_API_KEY" }, { status: 500 });
-  }
-
   try {
     const prompt = buildRewritePrompt(text, section, tone);
-
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
-        apiKey,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: prompt }],
-            },
-          ],
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    const rawText =
-      data?.candidates?.[0]?.content?.parts
-        ?.map((part: { text?: string }) => part.text || "")
-        .join("") || "";
-
-    const rewritten = sanitizeRewriteOutput(rawText);
-
-    if (!response.ok || !rewritten) {
-      return NextResponse.json(
-        { error: "AI rewrite failed. Please try again." },
-        { status: 500 }
-      );
-    }
+    const rewritten = await rewriteWithAIProviders(prompt);
 
     await logAIUsageEvent({
       userId: user.id,
@@ -116,8 +78,9 @@ export async function POST(request: Request) {
     const quota = await getAIQuotaStatus(user.id);
 
     return NextResponse.json({
-      text: rewritten,
+      text: rewritten.text,
       quota,
+      provider: rewritten.provider,
     });
   } catch {
     return NextResponse.json(
