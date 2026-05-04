@@ -55,7 +55,7 @@ export default function SignupForm() {
         Create account
       </p>
       <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-        Start building with CVForge
+        Start building with RoleArc
       </h1>
       <p className="mt-3 text-sm text-slate-600">
         Create your account and confirm your email to start building resumes.

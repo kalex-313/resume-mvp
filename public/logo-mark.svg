@@ -1,5 +1,12 @@
-<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="128" height="128" rx="24" fill="#0F172A"/>
-  <path d="M34 32H80C90.4934 32 99 40.5066 99 51C99 61.4934 90.4934 70 80 70H48V96H34V32Z" fill="white"/>
-  <rect x="48" y="44" width="30" height="14" rx="7" fill="#2563EB"/>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">RoleArc mark</title>
+  <defs>
+    <linearGradient id="roleArcGradient" x1="22" y1="18" x2="110" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#0F172A"/>
+  <path d="M36 88V36h31c16 0 26 9 26 23 0 11-7 19-18 22l19 7H75L53 79h-2v9H36Zm15-22h15c8 0 12-3 12-9s-4-9-12-9H51v18Z" fill="white"/>
+  <path d="M30 98c18 13 50 15 74-5" stroke="url(#roleArcGradient)" stroke-width="9" stroke-linecap="round"/>
 </svg>

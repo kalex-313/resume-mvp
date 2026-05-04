@@ -1,28 +1,13 @@
-<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="520" height="128" viewBox="0 0 520 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">RoleArc</title>
   <defs>
-    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3B82F6"></stop>
-      <stop offset="100%" stop-color="#2563EB"></stop>
+    <linearGradient id="roleArcGradient" x1="18" y1="14" x2="108" y2="114" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#2563EB"/>
     </linearGradient>
   </defs>
-
-  <!-- Background rounded -->
-  <rect width="256" height="256" rx="48" fill="url(#grad)"></rect>
-
-  <!-- C shape -->
-  <path d="M180 70 
-           A60 60 0 1 0 180 186 
-           L160 170 
-           A40 40 0 1 1 160 86 
-           Z" fill="white"></path>
-
-  <!-- V shape -->
-  <path d="M90 80 
-           L128 170 
-           L166 80 
-           L146 80 
-           L128 130 
-           L110 80 
-           Z" fill="white"></path>
-
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="#0F172A"/>
+  <path d="M38 90V37h31c16 0 27 9 27 23 0 11-7 19-18 22l19 8h-19L55 80h-2v10H38Zm15-23h15c8 0 13-3 13-9s-5-9-13-9H53v18Z" fill="white"/>
+  <path d="M32 98c18 13 50 15 74-5" stroke="url(#roleArcGradient)" stroke-width="9" stroke-linecap="round"/>
+  <text x="148" y="82" fill="#0F172A" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="56" font-weight="800" letter-spacing="0">RoleArc</text>
 </svg>

@@ -10,9 +10,9 @@ export function SiteFooter() {
         <div className="flex flex-col gap-2">
           <Link href="/" className="flex items-center">
             <img
-              src="/logo.png"
-              alt="CVForge"
-              className="h-16 w-auto object-contain"
+              src="/logo.svg"
+              alt="RoleArc"
+              className="h-10 w-auto object-contain"
             />
           </Link>
         </div>

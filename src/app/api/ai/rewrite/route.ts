@@ -12,6 +12,7 @@ import {
   type RewriteSection,
   type RewriteTone,
 } from "@/lib/ai/prompt";
+import { checkAiRateLimit, logAiRequest } from "@/lib/ai/anti-abuse";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,20 @@ export async function POST(request: Request) {
 
   if (!text) {
     return NextResponse.json({ error: "Missing text to rewrite." }, { status: 400 });
+  }
+
+  const rateLimit = await checkAiRateLimit(user.id);
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        error: rateLimit.dailyAllowed
+          ? "Too many AI rewrite requests. Please wait a minute and try again."
+          : "You have reached today's AI rewrite safety limit. Please try again tomorrow.",
+        code: rateLimit.dailyAllowed ? "AI_RATE_LIMITED" : "AI_DAILY_LIMITED",
+      },
+      { status: 429 }
+    );
   }
 
   const gate = await canUseAIRewrite(user.id);
@@ -96,6 +111,7 @@ export async function POST(request: Request) {
       resumeId,
       actionType: "ai_rewrite",
     });
+    await logAiRequest(user.id, "ai_rewrite", rateLimit.ipHash, rateLimit.userAgent);
 
     const quota = await getAIQuotaStatus(user.id);
 

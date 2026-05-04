@@ -1,4 +1,4 @@
-export type RewriteTone = "concise" | "balanced" | "detailed";
+﻿export type RewriteTone = "concise" | "balanced" | "detailed";
 
 export type RewriteSection =
   | "summary"
@@ -11,7 +11,7 @@ export type RewriteSection =
 function toneInstruction(tone: RewriteTone) {
   if (tone === "concise") {
     return `
-- Reduce unnecessary wording by roughly 20–30% when possible
+- Reduce unnecessary wording by roughly 20-30% when possible
 - Keep the original meaning and confidence level
 - Prefer simpler and shorter phrasing
 - Do not remove important facts already stated
@@ -68,7 +68,7 @@ LANGUAGE LOCK RULES:
 - If the input is written in English, output in English
 - If the input is written in Simplified Chinese, output in Simplified Chinese
 - If the input is written in Traditional Chinese, output in Traditional Chinese
-- If the input contains Traditional Chinese words such as "旺角", "專業", "經驗", or "履歷", keep using Traditional Chinese
+- If the input contains Traditional Chinese words such as "履歷", "經驗", "團隊", or "專案", keep using Traditional Chinese
 - Do NOT convert Chinese into Japanese
 - Do NOT convert Chinese into Korean
 - Do NOT romanize names or places unless the input already does so

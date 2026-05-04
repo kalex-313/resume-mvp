@@ -11,9 +11,9 @@ export async function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center">
           <img
-            src="/logo.png"
-            alt="CVForge"
-            className="h-20 w-auto object-contain"
+            src="/logo.svg"
+            alt="RoleArc"
+            className="h-11 w-auto object-contain"
           />
         </Link>
 

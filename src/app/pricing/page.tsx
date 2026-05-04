@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { createClient } from "@/lib/supabase/server";
@@ -108,11 +108,11 @@ export default async function PricingPage({ searchParams }: Props) {
             </div>
 
             <ul className="space-y-3 text-sm text-slate-700">
-              <li>✔ Build resumes</li>
-              <li>✔ Save drafts</li>
-              <li>❌ Limited AI rewrites</li>
-              <li>❌ PDF export locked</li>
-              <li>❌ Premium templates locked</li>
+              <li>Build resumes</li>
+              <li>Save drafts</li>
+              <li>Limited AI rewrites</li>
+              <li>PDF export locked</li>
+              <li>Premium templates locked</li>
             </ul>
           </div>
 
@@ -142,11 +142,11 @@ export default async function PricingPage({ searchParams }: Props) {
             </div>
 
             <ul className="space-y-3 text-sm text-slate-700">
-              <li>✔ Unlimited AI rewrite</li>
-              <li>✔ All premium templates</li>
-              <li>✔ Professional PDF export</li>
-              <li>✔ ATS-optimized formatting</li>
-              <li>✔ Faster editing workflow</li>
+              <li>Unlimited AI rewrite</li>
+              <li>All premium templates</li>
+              <li>Professional PDF export</li>
+              <li>ATS-optimized formatting</li>
+              <li>Faster editing workflow</li>
             </ul>
 
             <p className="mt-4 text-xs text-slate-500">

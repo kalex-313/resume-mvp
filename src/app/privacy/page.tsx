@@ -1,14 +1,14 @@
-import { SiteHeader } from "@/components/layout/site-header";
+﻿import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
 const LEGAL = {
   effectiveDate: "[Month DD, YYYY]",
   updatedDate: "[Month DD, YYYY]",
-  businessName: "CVForge",
+  businessName: "RoleArc",
   legalName: "[Legal business name, if different]",
   location: "[Business city / province / country]",
   privacyEmail: "[privacy@yourdomain.com]",
-  aiProviders: "[Name of AI provider(s)]",
+  aiProviders: "Google Gemini",
 };
 
 export default function PrivacyPage() {
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
 
           <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24">
             <p>
-              {LEGAL.businessName} ("CVForge", "we", "us", or "our") provides an
+              {LEGAL.businessName} ("RoleArc", "we", "us", or "our") provides an
               online resume-building service that helps users create, edit,
               improve, manage, and export resumes. This Privacy Policy explains
               how we collect, use, disclose, and protect personal information
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
             </ul>
 
             <h3>B. Resume content and user-generated content</h3>
-            <p>We collect the content you submit to CVForge, including:</p>
+            <p>We collect the content you submit to RoleArc, including:</p>
             <ul>
               <li>resume summaries, work experience, education, skills, languages, certifications, and contact details;</li>
               <li>edits you make to your resume content;</li>
@@ -109,7 +109,7 @@ export default function PrivacyPage() {
 
             <h2>3. AI Features</h2>
             <p>
-              CVForge may use third-party AI service providers to process text
+              RoleArc may use third-party AI service providers to process text
               you submit for AI-powered features, such as resume rewrite or
               improvement tools.
             </p>
@@ -141,13 +141,13 @@ export default function PrivacyPage() {
               We may disclose information if we believe disclosure is reasonably
               necessary to comply with law, legal process, or lawful requests;
               enforce our Terms or other agreements; protect the rights,
-              property, or safety of CVForge, our users, or others; or
+              property, or safety of RoleArc, our users, or others; or
               investigate fraud, security issues, or misuse.
             </p>
 
             <h3>C. Business transfers</h3>
             <p>
-              If CVForge is involved in a merger, acquisition, financing, sale
+              If RoleArc is involved in a merger, acquisition, financing, sale
               of assets, reorganization, or similar transaction, information may
               be transferred as part of that transaction, subject to applicable
               law.
@@ -194,9 +194,9 @@ export default function PrivacyPage() {
               jurisdiction.
             </p>
 
-            <h2>9. Children’s Privacy</h2>
+            <h2>9. Children's Privacy</h2>
             <p>
-              CVForge is not directed to children under the age of 13, and we
+              RoleArc is not directed to children under the age of 13, and we
               do not knowingly collect personal information from children under
               13. If you believe a child has provided personal information to
               us, please contact us.
@@ -213,7 +213,7 @@ export default function PrivacyPage() {
             <h2>11. Changes to This Privacy Policy</h2>
             <p>
               We may update this Privacy Policy from time to time. When we do,
-              we will update the “Last updated” date above. If we make material
+              we will update the last updated date above. If we make material
               changes, we may provide additional notice where appropriate.
             </p>
 

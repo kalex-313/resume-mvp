@@ -1,3 +1,9 @@
 {
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/health/supabase",
+      "schedule": "0 9 * * *"
+    }
+  ]
 }

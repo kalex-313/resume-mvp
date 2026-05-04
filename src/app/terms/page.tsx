@@ -1,10 +1,10 @@
-import { SiteHeader } from "@/components/layout/site-header";
+﻿import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
 const LEGAL = {
   effectiveDate: "[Month DD, YYYY]",
   updatedDate: "[Month DD, YYYY]",
-  businessName: "CVForge",
+  businessName: "RoleArc",
   legalName: "[Legal business name, if different]",
   location: "[Business city / province / country]",
   legalEmail: "[legal@yourdomain.com]",
@@ -30,7 +30,7 @@ export default function TermsPage() {
           <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24">
             <p>
               These Terms of Service ("Terms") govern your access to and use of
-              CVForge’s website, applications, and related services
+              RoleArc's website, applications, and related services
               (collectively, the "Services"). By accessing or using the
               Services, you agree to be bound by these Terms.
             </p>
@@ -39,7 +39,7 @@ export default function TermsPage() {
 
             <h2>1. Who We Are</h2>
             <p>
-              CVForge provides online tools to help users create, edit, improve,
+              RoleArc provides online tools to help users create, edit, improve,
               manage, and export resumes and related job application materials.
             </p>
 
@@ -77,7 +77,7 @@ export default function TermsPage() {
 
             <h2>4. AI Features and Outputs</h2>
             <p>
-              CVForge may offer AI-powered features, including resume rewrite or
+              RoleArc may offer AI-powered features, including resume rewrite or
               improvement tools.
             </p>
             <p>By using AI features, you understand and agree that:</p>
@@ -85,7 +85,7 @@ export default function TermsPage() {
               <li>AI output is generated automatically and may be inaccurate, incomplete, biased, or unsuitable for your purpose;</li>
               <li>AI output may not reflect legal, hiring, or professional requirements in your jurisdiction or industry;</li>
               <li>you are solely responsible for reviewing, editing, and deciding whether to use any AI-generated output; and</li>
-              <li>CVForge is not responsible for employment, hiring, or career outcomes based on AI-generated output.</li>
+              <li>RoleArc is not responsible for employment, hiring, or career outcomes based on AI-generated output.</li>
             </ul>
 
             <h2>5. Acceptable Use</h2>
@@ -151,7 +151,7 @@ export default function TermsPage() {
             <p>
               The Services, including our software, branding, site design,
               templates (except your User Content), text, graphics, and related
-              materials, are owned by or licensed to CVForge and are protected
+              materials, are owned by or licensed to RoleArc and are protected
               by intellectual property laws.
             </p>
 
@@ -169,7 +169,7 @@ export default function TermsPage() {
               TO THE MAXIMUM EXTENT PERMITTED BY LAW.
             </p>
             <p>
-              To the maximum extent permitted by law, CVForge disclaims all
+              To the maximum extent permitted by law, RoleArc disclaims all
               warranties, express, implied, or statutory, including implied
               warranties of merchantability, fitness for a particular purpose,
               title, and non-infringement.
@@ -184,7 +184,7 @@ export default function TermsPage() {
 
             <h2>12. Limitation of Liability</h2>
             <p>
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, CVFORGE AND ITS
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW, RoleArc AND ITS
               AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, CONTRACTORS, AND
               SERVICE PROVIDERS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
               SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR ANY
@@ -197,13 +197,13 @@ export default function TermsPage() {
               TERMS WILL NOT EXCEED THE GREATER OF:
             </p>
             <ol>
-              <li>the amount you paid to CVForge for the Services in the 12 months before the claim arose; or</li>
+              <li>the amount you paid to RoleArc for the Services in the 12 months before the claim arose; or</li>
               <li>CAD $100.</li>
             </ol>
 
             <h2>13. Indemnity</h2>
             <p>
-              You agree to defend, indemnify, and hold harmless CVForge and its
+              You agree to defend, indemnify, and hold harmless RoleArc and its
               affiliates, officers, directors, employees, contractors, and
               service providers from and against claims, liabilities, damages,
               judgments, losses, costs, and expenses arising out of or related
@@ -222,7 +222,7 @@ export default function TermsPage() {
             <h2>15. Changes to These Terms</h2>
             <p>
               We may update these Terms from time to time. When we do, we will
-              update the “Last updated” date above. Your continued use of the
+              update the last updated date above. Your continued use of the
               Services after updated Terms become effective means you accept the
               updated Terms.
             </p>

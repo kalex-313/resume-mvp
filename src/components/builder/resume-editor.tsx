@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -167,7 +167,7 @@ function parseStoredDate(value: string): ParsedDate {
     };
   }
 
-  const zhYearMatch = raw.match(/^(\d{4})年$/);
+  const zhYearMatch = raw.match(/^(\d{4})撟?/);
   if (zhYearMatch) {
     return { month: "", year: zhYearMatch[1], present: false };
   }
@@ -503,7 +503,7 @@ export function ResumeEditor({
             {saveState === "saving"
               ? "Saving..."
               : saveState === "saved"
-              ? "Saved ✅"
+              ? "Saved"
               : saveState === "error"
               ? "Save failed"
               : "Changes auto-save automatically"}
@@ -512,7 +512,7 @@ export function ResumeEditor({
         </div>
 
         <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
-          CVForge supports English, Chinese, and bilingual resume content. AI
+          RoleArc supports English, Chinese, and bilingual resume content. AI
           rewrite keeps the same language as your input.
         </div>
 
@@ -1217,7 +1217,7 @@ export function ResumeEditor({
                 setContent({
                   ...content,
                   skills: value
-                    .split(/[,.，、\n]/)
+                    .split(/[,.嚗n]/)
                     .map((item) => item.trim())
                     .filter(Boolean),
                 });

@@ -19,7 +19,7 @@ export default function UpgradePage() {
         </h1>
 
         <p className="mt-4 text-lg text-slate-600">
-          CVForge helps you turn weak drafts into job-ready resumes with better wording,
+          RoleArc helps you turn weak drafts into job-ready resumes with better wording,
           premium layouts, and polished export.
         </p>
 
@@ -27,11 +27,11 @@ export default function UpgradePage() {
           <h2 className="text-xl font-semibold text-slate-900">What you unlock with Pro</h2>
 
           <ul className="mt-5 space-y-3 text-sm text-slate-700">
-            <li>✔ Unlimited AI rewrite</li>
-            <li>✔ All premium templates</li>
-            <li>✔ Clean, professional PDF export</li>
-            <li>✔ ATS-optimized formatting</li>
-            <li>✔ Faster resume editing workflow</li>
+            <li>Unlimited AI rewrite</li>
+            <li>All premium templates</li>
+            <li>Clean, professional PDF export</li>
+            <li>ATS-optimized formatting</li>
+            <li>Faster resume editing workflow</li>
           </ul>
 
           <p className="mt-6 text-xs text-slate-500">
