@@ -1,13 +1,13 @@
-﻿import { SiteHeader } from "@/components/layout/site-header";
+import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
 const LEGAL = {
-  effectiveDate: "[Month DD, YYYY]",
-  updatedDate: "[Month DD, YYYY]",
+  effectiveDate: "May 5, 2026",
+  updatedDate: "May 5, 2026",
   businessName: "RoleArc",
-  legalName: "[Legal business name, if different]",
-  location: "[Business city / province / country]",
-  privacyEmail: "[privacy@yourdomain.com]",
+  legalName: "RoleArc",
+  location: "British Columbia, Canada",
+  privacyEmail: "privacy@rolearc.xyz",
   aiProviders: "Google Gemini",
 };
 
@@ -119,10 +119,7 @@ export default function PrivacyPage() {
               <li>the output is generated automatically and may not always be accurate or appropriate; and</li>
               <li>you remain responsible for reviewing and approving any AI-generated output before using it.</li>
             </ul>
-            <p>
-              Current AI provider reference: {LEGAL.aiProviders}. Replace this
-              placeholder before public launch.
-            </p>
+            <p>Current AI provider reference: {LEGAL.aiProviders}.</p>
 
             <h2>4. How We Share Information</h2>
             <p>We do not sell personal information. We may share information in the following circumstances:</p>
