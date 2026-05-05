@@ -4,8 +4,8 @@ import { SiteFooter } from "@/components/layout/site-footer";
 export const dynamic = "force-dynamic";
 
 export default function ContactPage() {
-  const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME || "ResumeReady";
-  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@example.com";
+  const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME || "RoleArc";
+  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@rolearc.xyz";
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -17,7 +17,7 @@ export default function ContactPage() {
           </p>
           <h1 className="text-4xl font-bold tracking-tight text-slate-900">Support and contact</h1>
           <p className="mt-4 text-slate-600">
-            Use this page as your launch-ready contact page and replace placeholder details before going public.
+            Contact RoleArc for billing, account access, or resume support.
           </p>
 
           <div className="mt-8 space-y-6 text-sm leading-7 text-slate-700">
