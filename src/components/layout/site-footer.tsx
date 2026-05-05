@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function SiteFooter() {
   const supportEmail =
-    process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@example.com";
+    process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@rolearc.xyz";
 
   return (
     <footer className="border-t border-slate-200 bg-white">
