@@ -8,9 +8,9 @@ import { createResumeAction } from "./actions";
 import type { ResumeRecord } from "@/types/resume";
 
 function formatUpdatedAt(value?: string) {
-  if (!value) return "—";
+  if (!value) return "Unknown";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return "Unknown";
   return date.toLocaleDateString();
 }
 
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
                       {resume.title || "Untitled Resume"}
                     </p>
                     <p className="mt-1 text-sm text-slate-500">
-                      Template: {resume.template_id || "professional-blue"} · Updated:{" "}
+                      Template: {resume.template_id || "professional-blue"} | Updated:{" "}
                       {formatUpdatedAt(resume.updated_at)}
                     </p>
                   </div>
