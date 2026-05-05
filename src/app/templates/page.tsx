@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { TemplateCatalogGrid } from "@/components/templates/template-catalog";
 import { createClient } from "@/lib/supabase/server";
+import { getUserPlan } from "@/lib/ai/quota";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,7 @@ export default async function TemplatesPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   const user = data.user;
+  const userPlan = user ? await getUserPlan(user.id) : "free";
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -26,7 +28,7 @@ export default async function TemplatesPage() {
         </section>
 
         <section className="mt-8">
-          <TemplateCatalogGrid isLoggedIn={!!user} />
+          <TemplateCatalogGrid isLoggedIn={!!user} userPlan={userPlan} />
         </section>
       </main>
       <SiteFooter />

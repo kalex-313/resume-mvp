@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getUserPlan } from "@/lib/ai/quota";
+import { isFreeTemplate } from "@/lib/templates";
 
 function getDefaultContent() {
   return {
@@ -60,6 +62,17 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
   const templateId = String(body.templateId || "professional-blue");
+  const plan = await getUserPlan(authData.user.id);
+
+  if (plan === "free" && !isFreeTemplate(templateId)) {
+    return NextResponse.json(
+      {
+        error: "This template is available on the Pro plan.",
+        code: "PREMIUM_TEMPLATE_LOCKED",
+      },
+      { status: 403 }
+    );
+  }
 
   const { data, error } = await supabase
     .from("resumes")

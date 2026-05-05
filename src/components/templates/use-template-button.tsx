@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 
 export function UseTemplateButton({
   templateId,
-  isLoggedIn
+  isLoggedIn,
+  locked = false,
 }: {
   templateId: string;
   isLoggedIn: boolean;
+  locked?: boolean;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,11 @@ export function UseTemplateButton({
   async function handleClick() {
     if (!isLoggedIn) {
       router.push("/auth/signup");
+      return;
+    }
+
+    if (locked) {
+      router.push("/upgrade");
       return;
     }
 
@@ -52,7 +59,7 @@ export function UseTemplateButton({
       disabled={loading}
       className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
     >
-      {loading ? "Opening..." : "Use template"}
+      {loading ? "Opening..." : locked ? "Upgrade" : "Use template"}
     </button>
   );
 }

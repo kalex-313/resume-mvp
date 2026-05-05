@@ -13,6 +13,7 @@ import { AIRewriteControls } from "./ai-rewrite-controls";
 import { PDFDownloadButton } from "./pdf-download-button";
 import { TemplateSelector } from "./template-selector";
 import { PDFLockedNote } from "./pdf-locked-note";
+import { isFreeTemplate } from "@/lib/templates";
 
 function emptyExperience() {
   return {
@@ -91,8 +92,6 @@ type ParsedDate = {
   year: string;
   present: boolean;
 };
-
-const FREE_TEMPLATES = ["professional-blue", "minimal-clean", "ats-classic"];
 
 const MONTH_OPTIONS = [
   "",
@@ -453,7 +452,7 @@ export function ResumeEditor({
   }
 
   function handleTemplateChange(nextTemplateId: string) {
-    if (initialPlan === "free" && !FREE_TEMPLATES.includes(nextTemplateId)) {
+    if (initialPlan === "free" && !isFreeTemplate(nextTemplateId)) {
       alert("This template is available on the Pro plan.");
       window.location.href = "/upgrade";
       return;

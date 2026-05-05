@@ -3,8 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserPlan } from "@/lib/ai/quota";
-
-const FREE_TEMPLATES = ["professional-blue", "minimal-clean", "ats-classic"];
+import { isFreeTemplate } from "@/lib/templates";
 
 type RouteParams = {
   params: Promise<{ resumeId: string }>;
@@ -28,7 +27,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   const nextTemplateId = String(body.template_id || "professional-blue");
 
-  if (plan === "free" && !FREE_TEMPLATES.includes(nextTemplateId)) {
+  if (plan === "free" && !isFreeTemplate(nextTemplateId)) {
     return NextResponse.json(
       {
         error: "This template is available on the Pro plan.",

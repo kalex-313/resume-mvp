@@ -90,7 +90,13 @@ function MiniPreview({ item }: { item: TemplateCatalogItem }) {
   );
 }
 
-export function TemplateCatalogGrid({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+export function TemplateCatalogGrid({
+  isLoggedIn = false,
+  userPlan = "free",
+}: {
+  isLoggedIn?: boolean;
+  userPlan?: "free" | "pro";
+}) {
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {templateCatalog.map((item) => (
@@ -107,7 +113,11 @@ export function TemplateCatalogGrid({ isLoggedIn = false }: { isLoggedIn?: boole
             <span className="text-xs text-slate-500">
               {item.premium ? "Best for paid users" : "Included in base library"}
             </span>
-            <UseTemplateButton templateId={item.id} isLoggedIn={isLoggedIn} />
+            <UseTemplateButton
+              templateId={item.id}
+              isLoggedIn={isLoggedIn}
+              locked={!!item.premium && userPlan !== "pro"}
+            />
           </div>
         </div>
       ))}
