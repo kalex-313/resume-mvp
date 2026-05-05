@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getStripeServer } from "@/lib/stripe";
+import { canUseTestCheckout, getStripeServer } from "@/lib/stripe";
 
 export async function POST() {
   const supabase = await createClient();
@@ -13,6 +13,13 @@ export async function POST() {
     return NextResponse.redirect(new URL("/auth/login", process.env.NEXT_PUBLIC_SITE_URL), {
       status: 303,
     });
+  }
+
+  if (!canUseTestCheckout(user.email)) {
+    return NextResponse.redirect(
+      new URL("/pricing?upgrade=test-mode-blocked", process.env.NEXT_PUBLIC_SITE_URL),
+      { status: 303 }
+    );
   }
 
   const stripe = getStripeServer();

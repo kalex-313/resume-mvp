@@ -86,6 +86,12 @@ export default async function PricingPage({ searchParams }: Props) {
           </div>
         ) : null}
 
+        {params.upgrade === "test-mode-blocked" ? (
+          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            Test checkout is restricted while RoleArc is using Stripe sandbox mode.
+          </div>
+        ) : null}
+
         {scheduledCancellation ? (
           <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             Your Pro plan is scheduled to cancel on{" "}

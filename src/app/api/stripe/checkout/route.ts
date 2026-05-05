@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getStripeServer } from "@/lib/stripe";
+import { canUseTestCheckout, getStripeServer } from "@/lib/stripe";
 
 export async function POST() {
   const supabase = await createClient();
@@ -8,6 +8,13 @@ export async function POST() {
 
   if (authError || !authData.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!canUseTestCheckout(authData.user.email)) {
+    return NextResponse.json(
+      { error: "Stripe test checkout is restricted on the production site." },
+      { status: 403 }
+    );
   }
 
   const stripe = getStripeServer();
