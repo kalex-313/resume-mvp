@@ -1,13 +1,13 @@
-﻿import { SiteHeader } from "@/components/layout/site-header";
+import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
 const LEGAL = {
-  effectiveDate: "[Month DD, YYYY]",
-  updatedDate: "[Month DD, YYYY]",
+  effectiveDate: "May 5, 2026",
+  updatedDate: "May 5, 2026",
   businessName: "RoleArc",
-  legalName: "[Legal business name, if different]",
-  location: "[Business city / province / country]",
-  legalEmail: "[legal@yourdomain.com]",
+  legalName: "RoleArc",
+  location: "British Columbia, Canada",
+  legalEmail: "legal@rolearc.xyz",
   governingLaw: "British Columbia, Canada",
 };
 
