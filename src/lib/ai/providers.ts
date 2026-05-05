@@ -116,7 +116,7 @@ async function rewriteWithOpenRouterProvider(prompt: string): Promise<RewritePro
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://resume-mvp.vercel.app",
+        "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://rolearc.xyz",
         "X-Title": process.env.NEXT_PUBLIC_APP_NAME || "RoleArc",
       },
       body: JSON.stringify({
