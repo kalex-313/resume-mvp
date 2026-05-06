@@ -20,6 +20,16 @@ type LandingPageProps = {
   }>;
 };
 
+const relatedPages = [
+  { href: "/ai-resume-builder", label: "AI Resume Builder" },
+  { href: "/ats-resume-templates", label: "ATS Resume Templates" },
+  { href: "/resume-builder-canada", label: "Resume Builder for Canada" },
+  { href: "/student-resume-builder", label: "Student Resume Builder" },
+  { href: "/career-change-resume-builder", label: "Career Change Resume Builder" },
+  { href: "/entry-level-resume-builder", label: "Entry Level Resume Builder" },
+  { href: "/resume-pdf-export", label: "Resume PDF Export" },
+];
+
 export function SeoLandingPage({
   eyebrow,
   title,
@@ -30,8 +40,25 @@ export function SeoLandingPage({
   sections,
   faqs,
 }: LandingPageProps) {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <SiteHeader />
       <main>
         <section className="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -124,6 +151,26 @@ export function SeoLandingPage({
                   <h3 className="font-medium text-slate-900">{faq.question}</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{faq.answer}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-16">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <p className="text-sm font-medium text-brand-600">Explore more resume builder paths</p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+              Find the RoleArc page that matches your job search
+            </h2>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {relatedPages.map((page) => (
+                <Link
+                  key={page.href}
+                  href={page.href}
+                  className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-700 hover:border-brand-200 hover:text-brand-700"
+                >
+                  {page.label}
+                </Link>
               ))}
             </div>
           </div>

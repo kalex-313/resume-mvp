@@ -119,6 +119,61 @@ export default async function HomePage() {
         </section>
 
         <section className="mt-14">
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold text-slate-900">Start from the resume path that fits you</h2>
+            <p className="mt-2 max-w-3xl text-slate-600">
+              Different job searches need different resume angles. Choose a focused RoleArc page for AI rewriting,
+              ATS-friendly templates, Canadian applications, student resumes, career changes, entry level roles,
+              or polished PDF export.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                href: "/ai-resume-builder",
+                title: "AI Resume Builder",
+                body: "Improve summaries and bullet points while keeping your experience truthful.",
+              },
+              {
+                href: "/ats-resume-templates",
+                title: "ATS Resume Templates",
+                body: "Use clean layouts with clear sections and recruiter-friendly formatting.",
+              },
+              {
+                href: "/resume-builder-canada",
+                title: "Resume Builder for Canada",
+                body: "Prepare a clearer resume for Canadian job applications and online hiring portals.",
+              },
+              {
+                href: "/student-resume-builder",
+                title: "Student Resume Builder",
+                body: "Turn projects, coursework, volunteering, and part-time work into stronger resume content.",
+              },
+              {
+                href: "/career-change-resume-builder",
+                title: "Career Change Resume Builder",
+                body: "Reframe transferable skills and old-role experience for the next direction.",
+              },
+              {
+                href: "/entry-level-resume-builder",
+                title: "Entry Level Resume Builder",
+                body: "Create a confident first-role resume with clean wording and practical structure.",
+              },
+            ].map((page) => (
+              <Link
+                key={page.href}
+                href={page.href}
+                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-brand-200 hover:shadow-md"
+              >
+                <h3 className="text-lg font-semibold text-slate-900">{page.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{page.body}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-14">
           <PricingComparison />
         </section>
       </main>
