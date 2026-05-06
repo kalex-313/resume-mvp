@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStripeServer } from "@/lib/stripe";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+
+const portalRateLimitResponse = rateLimitResponse(
+  "Too many billing portal attempts. Please wait a few minutes and try again."
+);
 
 export async function POST() {
   const supabase = await createClient();
@@ -13,6 +18,17 @@ export async function POST() {
     return NextResponse.redirect(new URL("/auth/login", process.env.NEXT_PUBLIC_SITE_URL), {
       status: 303,
     });
+  }
+
+  const rateLimit = await checkRateLimit({
+    action: "stripe:portal",
+    limit: 20,
+    windowMs: 15 * 60 * 1000,
+    userId: user.id,
+  });
+
+  if (!rateLimit.allowed) {
+    return portalRateLimitResponse(rateLimit);
   }
 
   const { data: profile } = await supabase

@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { canUseTestCheckout, getStripeServer } from "@/lib/stripe";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+
+const checkoutRateLimitResponse = rateLimitResponse(
+  "Too many checkout attempts. Please wait a few minutes and try again."
+);
 
 export async function POST() {
   const supabase = await createClient();
@@ -20,6 +25,17 @@ export async function POST() {
       new URL("/pricing?upgrade=test-mode-blocked", process.env.NEXT_PUBLIC_SITE_URL),
       { status: 303 }
     );
+  }
+
+  const rateLimit = await checkRateLimit({
+    action: "stripe:create-checkout",
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+    userId: user.id,
+  });
+
+  if (!rateLimit.allowed) {
+    return checkoutRateLimitResponse(rateLimit);
   }
 
   const stripe = getStripeServer();

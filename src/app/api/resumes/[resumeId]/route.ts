@@ -4,10 +4,15 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserPlan } from "@/lib/ai/quota";
 import { isFreeTemplate } from "@/lib/templates";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
 
 type RouteParams = {
   params: Promise<{ resumeId: string }>;
 };
+
+const updateResumeRateLimitResponse = rateLimitResponse(
+  "Too many save attempts. Please wait a minute and try again."
+);
 
 export async function PATCH(request: Request, { params }: RouteParams) {
   const { resumeId } = await params;
@@ -20,6 +25,17 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rateLimit = await checkRateLimit({
+    action: "resume:update",
+    limit: 120,
+    windowMs: 60 * 1000,
+    userId: user.id,
+  });
+
+  if (!rateLimit.allowed) {
+    return updateResumeRateLimitResponse(rateLimit);
   }
 
   const plan = await getUserPlan(user.id);

@@ -1,47 +1,24 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { getRequestContext } from "@/lib/ai/anti-abuse";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
 
-const SIGNUP_RATE_LIMIT_WINDOW_MINUTES = 15;
-const SIGNUP_RATE_LIMIT_PER_IP = 5;
 const SIGNUP_SUCCESS_MESSAGE =
   "If this email can receive RoleArc account messages, we will send the next signup step shortly.";
-const signupAttempts = new Map<string, number[]>();
-
-function countRecentSignupAttempts(ipHash: string | null) {
-  if (!ipHash) return 0;
-
-  const since = Date.now() - SIGNUP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000;
-  const attempts = signupAttempts.get(ipHash)?.filter((timestamp) => timestamp >= since) || [];
-  signupAttempts.set(ipHash, attempts);
-
-  return attempts.length;
-}
-
-function logSignupAttempt(ipHash: string | null) {
-  if (!ipHash) return;
-
-  const attempts = signupAttempts.get(ipHash) || [];
-  attempts.push(Date.now());
-  signupAttempts.set(ipHash, attempts);
-}
+const signupRateLimitResponse = rateLimitResponse(
+  "Too many signup attempts. Please wait a few minutes and try again."
+);
 
 export async function POST(request: Request) {
-  const { ipHash } = await getRequestContext();
-  const recentSignupAttempts = countRecentSignupAttempts(ipHash);
+  const rateLimit = await checkRateLimit({
+    action: "auth:signup",
+    limit: 5,
+    windowMs: 15 * 60 * 1000,
+  });
 
-  if (recentSignupAttempts >= SIGNUP_RATE_LIMIT_PER_IP) {
-    return NextResponse.json(
-      {
-        error: "Too many signup attempts. Please wait a few minutes and try again.",
-        code: "SIGNUP_RATE_LIMITED",
-      },
-      { status: 429 }
-    );
+  if (!rateLimit.allowed) {
+    return signupRateLimitResponse(rateLimit);
   }
-
-  logSignupAttempt(ipHash);
 
   const body = await request.json();
 

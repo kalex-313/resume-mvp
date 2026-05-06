@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { canUseTestCheckout, getStripeServer } from "@/lib/stripe";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+
+const checkoutRateLimitResponse = rateLimitResponse(
+  "Too many checkout attempts. Please wait a few minutes and try again."
+);
 
 export async function POST() {
   const supabase = await createClient();
@@ -15,6 +20,17 @@ export async function POST() {
       { error: "Stripe test checkout is restricted on the production site." },
       { status: 403 }
     );
+  }
+
+  const rateLimit = await checkRateLimit({
+    action: "stripe:checkout",
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+    userId: authData.user.id,
+  });
+
+  if (!rateLimit.allowed) {
+    return checkoutRateLimitResponse(rateLimit);
   }
 
   const stripe = getStripeServer();

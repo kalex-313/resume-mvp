@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/ai/quota";
 import { isFreeTemplate } from "@/lib/templates";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+
+const createFromTemplateRateLimitResponse = rateLimitResponse(
+  "Too many template creation attempts. Please wait a few minutes and try again."
+);
 
 function getDefaultContent() {
   return {
@@ -58,6 +63,17 @@ export async function POST(request: NextRequest) {
 
   if (authError || !authData.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rateLimit = await checkRateLimit({
+    action: "resume:create-from-template",
+    limit: 30,
+    windowMs: 15 * 60 * 1000,
+    userId: authData.user.id,
+  });
+
+  if (!rateLimit.allowed) {
+    return createFromTemplateRateLimitResponse(rateLimit);
   }
 
   const body = await request.json();

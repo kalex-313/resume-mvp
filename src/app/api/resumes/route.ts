@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+
+const createResumeRateLimitResponse = rateLimitResponse(
+  "Too many resume creation attempts. Please wait a few minutes and try again."
+);
 
 export async function POST() {
   const supabase = await createClient();
@@ -8,6 +13,17 @@ export async function POST() {
 
   if (userError || !authData.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rateLimit = await checkRateLimit({
+    action: "resume:create",
+    limit: 30,
+    windowMs: 15 * 60 * 1000,
+    userId: authData.user.id,
+  });
+
+  if (!rateLimit.allowed) {
+    return createResumeRateLimitResponse(rateLimit);
   }
 
   const { data, error } = await supabase
