@@ -27,6 +27,18 @@ export function SiteFooter() {
           <Link href="/resume-pdf-export" className="hover:text-slate-900">
             PDF Export
           </Link>
+          <Link href="/resume-builder-canada" className="hover:text-slate-900">
+            Canada
+          </Link>
+          <Link href="/student-resume-builder" className="hover:text-slate-900">
+            Students
+          </Link>
+          <Link href="/career-change-resume-builder" className="hover:text-slate-900">
+            Career Change
+          </Link>
+          <Link href="/entry-level-resume-builder" className="hover:text-slate-900">
+            Entry Level
+          </Link>
           <Link href="/pricing" className="hover:text-slate-900">
             Pricing
           </Link>
