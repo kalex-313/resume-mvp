@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { TrackLink } from "@/components/analytics/track-link";
 
 type LandingPageProps = {
   eyebrow: string;
@@ -73,9 +74,14 @@ export function SeoLandingPage({
               {description}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/auth/signup" className="rounded-xl bg-brand-600 px-5 py-3 text-sm font-medium text-white">
+              <TrackLink
+                href="/auth/signup"
+                eventName="sign_up_click"
+                eventParams={{ source: "seo_landing_page", page_title: title }}
+                className="rounded-xl bg-brand-600 px-5 py-3 text-sm font-medium text-white"
+              >
                 {primaryCta}
-              </Link>
+              </TrackLink>
               <Link
                 href="/pricing"
                 className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700"

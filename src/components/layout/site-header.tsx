@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { TrackLink } from "@/components/analytics/track-link";
 
 export async function SiteHeader() {
   const supabase = await createClient();
@@ -41,12 +42,14 @@ export async function SiteHeader() {
               <Link href="/auth/login" className="hover:text-slate-900">
                 Login
               </Link>
-              <Link
+              <TrackLink
                 href="/auth/signup"
+                eventName="sign_up_click"
+                eventParams={{ source: "site_header" }}
                 className="rounded-xl bg-brand-600 px-3 py-2 text-white"
               >
                 Sign up
-              </Link>
+              </TrackLink>
             </>
           )}
         </nav>

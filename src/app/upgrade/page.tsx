@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { CheckoutForm } from "@/components/pricing/checkout-form";
 
 export const dynamic = "force-dynamic";
 
@@ -47,11 +48,7 @@ export default function UpgradePage() {
             Back
           </Link>
 
-          <form action="/api/stripe/create-checkout" method="POST">
-            <button className="rounded-xl bg-brand-600 px-6 py-3 text-white hover:opacity-95">
-              Continue to Payment
-            </button>
-          </form>
+          <CheckoutForm />
         </div>
       </main>
 

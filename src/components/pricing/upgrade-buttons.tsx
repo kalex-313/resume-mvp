@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { TrackLink } from "@/components/analytics/track-link";
 
 export function UpgradeButtons({ isPro }: { isPro: boolean }) {
   if (isPro) {
@@ -14,11 +14,17 @@ export function UpgradeButtons({ isPro }: { isPro: boolean }) {
   }
 
   return (
-    <Link
+    <TrackLink
       href="/upgrade"
+      eventName="start_checkout"
+      eventParams={{
+        plan: "pro",
+        billing_period: "monthly",
+        source: "pricing_page",
+      }}
       className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:opacity-95"
     >
       Start My Pro Plan
-    </Link>
+    </TrackLink>
   );
 }

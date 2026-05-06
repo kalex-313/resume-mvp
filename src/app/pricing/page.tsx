@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/ai/quota";
 import { UpgradeButtons } from "@/components/pricing/upgrade-buttons";
 import { ATSFriendlyNote } from "@/components/common/ats-friendly-note";
+import { TrackLink } from "@/components/analytics/track-link";
+import { TrackPageView } from "@/components/analytics/track-page-view";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +64,13 @@ export default async function PricingPage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <TrackPageView
+        eventName="pricing_view"
+        eventParams={{
+          plan: proEnabled ? "pro" : "free",
+          signed_in: !!user,
+        }}
+      />
       <SiteHeader />
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-14">
         <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -182,12 +191,18 @@ export default async function PricingPage({ searchParams }: Props) {
 
             {!user ? (
               <div className="mt-6">
-                <Link
+                <TrackLink
                   href="/upgrade"
+                  eventName="start_checkout"
+                  eventParams={{
+                    plan: "pro",
+                    billing_period: "monthly",
+                    source: "pricing_page",
+                  }}
                   className="inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-3 text-sm font-medium text-white hover:opacity-95"
                 >
                   Start My Pro Plan
-                </Link>
+                </TrackLink>
               </div>
             ) : null}
           </div>

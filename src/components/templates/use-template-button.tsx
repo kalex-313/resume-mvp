@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 export function UseTemplateButton({
   templateId,
@@ -17,6 +18,10 @@ export function UseTemplateButton({
 
   async function handleClick() {
     if (!isLoggedIn) {
+      trackEvent("sign_up_click", {
+        source: "template_gallery",
+        template_id: templateId,
+      });
       router.push("/auth/signup");
       return;
     }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { trackEvent } from "@/lib/analytics";
 
 type PDFDownloadButtonProps = {
   targetId: string;
@@ -187,6 +188,10 @@ export function PDFDownloadButton({
   const [loading, setLoading] = useState(false);
 
   async function handleDownload() {
+    trackEvent("pdf_export_click", {
+      source: "resume_builder",
+    });
+
     const target = document.getElementById(targetId);
 
     if (!target) {

@@ -6,6 +6,7 @@ import { TemplateCatalogGrid } from "@/components/templates/template-catalog";
 import { SocialProofStrip } from "@/components/marketing/social-proof-strip";
 import { BeforeAfterDemo } from "@/components/marketing/before-after-demo";
 import { PricingComparison } from "@/components/marketing/pricing-comparison";
+import { TrackLink } from "@/components/analytics/track-link";
 
 export const dynamic = "force-dynamic";
 
@@ -31,12 +32,14 @@ export default async function HomePage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link
+              <TrackLink
                 href={user ? "/dashboard" : "/auth/signup"}
+                eventName={user ? "dashboard_click" : "sign_up_click"}
+                eventParams={{ source: "home_hero" }}
                 className="rounded-xl bg-brand-600 px-5 py-3 text-white"
               >
                 {user ? "Open Dashboard" : "Create My Resume Free"}
-              </Link>
+              </TrackLink>
               <Link
                 href="/pricing"
                 className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-slate-700"
