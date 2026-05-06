@@ -85,6 +85,9 @@ export default async function PricingPage({ searchParams }: Props) {
               Start free, test the workflow, then unlock stronger templates, unlimited AI rewriting,
               and polished PDF export when you are ready to apply seriously.
             </p>
+            <p className="mt-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
+              You can create an account and try the resume builder before paying. No credit card is needed for the Free plan.
+            </p>
             <p className="mt-3 text-sm text-slate-500">
               Current plan: <span className="font-semibold">{proEnabled ? "Pro" : "Free"}</span>
             </p>
@@ -127,7 +130,7 @@ export default async function PricingPage({ searchParams }: Props) {
                 <span className="pb-1 text-sm text-slate-500">/month</span>
               </div>
               <p className="mt-2 text-sm text-slate-600">
-                Try the basics before upgrading.
+                Create your first draft, test AI rewrite, and decide later if Pro is worth it.
               </p>
             </div>
 
@@ -138,6 +141,19 @@ export default async function PricingPage({ searchParams }: Props) {
               <li>PDF export locked</li>
               <li>Premium templates locked</li>
             </ul>
+
+            {!user ? (
+              <div className="mt-6">
+                <TrackLink
+                  href="/auth/signup"
+                  eventName="sign_up_click"
+                  eventParams={{ source: "pricing_free_plan" }}
+                  className="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                >
+                  Start Free
+                </TrackLink>
+              </div>
+            ) : null}
           </div>
 
           <div
@@ -154,10 +170,10 @@ export default async function PricingPage({ searchParams }: Props) {
                   <span className="pb-1 text-sm text-slate-500">{PRO_PRICE_PERIOD}</span>
                 </div>
                 <p className="mt-2 text-sm font-semibold text-slate-900">
-                  Get hired faster with stronger resumes
+                  Unlock stronger output when your resume is ready
                 </p>
                 <p className="mt-2 text-sm text-slate-600">
-                  Unlock better presentation, faster editing, and cleaner export flow.
+                  Use Pro for unlimited rewriting, premium layouts, and polished export-ready PDFs.
                 </p>
               </div>
               <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
@@ -174,7 +190,7 @@ export default async function PricingPage({ searchParams }: Props) {
             </ul>
 
             <p className="mt-4 text-xs text-slate-500">
-              Most users upgrade after creating their first serious resume.
+              Best after you have a serious resume draft and want a cleaner final version.
             </p>
 
             <div className="mt-6 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">

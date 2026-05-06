@@ -164,6 +164,24 @@ export function SeoLandingPage({
 
         <section className="mx-auto max-w-6xl px-6 pb-16">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="mb-8 rounded-2xl border border-brand-100 bg-brand-50 px-5 py-5">
+              <p className="text-sm font-medium text-brand-700">Ready to make your resume clearer?</p>
+              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="max-w-2xl text-sm leading-6 text-slate-700">
+                  Start with the free builder, save your draft, and upgrade only when you need unlimited AI rewrite,
+                  premium templates, or professional PDF export.
+                </p>
+                <TrackLink
+                  href="/auth/signup"
+                  eventName="sign_up_click"
+                  eventParams={{ source: "seo_landing_mid_page", page_title: title }}
+                  className="inline-flex shrink-0 justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-medium text-white"
+                >
+                  Start free
+                </TrackLink>
+              </div>
+            </div>
+
             <p className="text-sm font-medium text-brand-600">Explore more resume builder paths</p>
             <h2 className="mt-2 text-2xl font-semibold text-slate-900">
               Find the RoleArc page that matches your job search

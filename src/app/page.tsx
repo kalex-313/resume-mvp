@@ -25,10 +25,10 @@ export default async function HomePage() {
               AI resume builder for serious job applications
             </p>
             <h1 className="max-w-3xl text-5xl font-bold tracking-tight text-slate-900">
-              Create job-ready resumes with strong templates, cleaner wording, and a faster workflow
+              Build a cleaner resume for your next job application
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Choose a layout, improve weak bullets with AI, and export a polished resume that feels ready to send.
+              Start free, choose an ATS-friendly template, use AI to improve weak wording, and upgrade when you are ready to export a polished PDF.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -38,15 +38,19 @@ export default async function HomePage() {
                 eventParams={{ source: "home_hero" }}
                 className="rounded-xl bg-brand-600 px-5 py-3 text-white"
               >
-                {user ? "Open Dashboard" : "Create My Resume Free"}
+                {user ? "Open Dashboard" : "Start Free"}
               </TrackLink>
               <Link
                 href="/pricing"
                 className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-slate-700"
               >
-                See Plans
+                See Pro Features
               </Link>
             </div>
+
+            <p className="mt-3 text-sm text-slate-500">
+              No credit card needed to start. Upgrade only when you want unlimited AI rewrite and PDF export.
+            </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
