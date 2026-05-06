@@ -1,8 +1,48 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestContext } from "@/lib/ai/anti-abuse";
+
+const SIGNUP_RATE_LIMIT_WINDOW_MINUTES = 15;
+const SIGNUP_RATE_LIMIT_PER_IP = 5;
+const SIGNUP_SUCCESS_MESSAGE =
+  "If this email can receive RoleArc account messages, we will send the next signup step shortly.";
+const signupAttempts = new Map<string, number[]>();
+
+function countRecentSignupAttempts(ipHash: string | null) {
+  if (!ipHash) return 0;
+
+  const since = Date.now() - SIGNUP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000;
+  const attempts = signupAttempts.get(ipHash)?.filter((timestamp) => timestamp >= since) || [];
+  signupAttempts.set(ipHash, attempts);
+
+  return attempts.length;
+}
+
+function logSignupAttempt(ipHash: string | null) {
+  if (!ipHash) return;
+
+  const attempts = signupAttempts.get(ipHash) || [];
+  attempts.push(Date.now());
+  signupAttempts.set(ipHash, attempts);
+}
 
 export async function POST(request: Request) {
+  const { ipHash } = await getRequestContext();
+  const recentSignupAttempts = countRecentSignupAttempts(ipHash);
+
+  if (recentSignupAttempts >= SIGNUP_RATE_LIMIT_PER_IP) {
+    return NextResponse.json(
+      {
+        error: "Too many signup attempts. Please wait a few minutes and try again.",
+        code: "SIGNUP_RATE_LIMITED",
+      },
+      { status: 429 }
+    );
+  }
+
+  logSignupAttempt(ipHash);
+
   const body = await request.json();
 
   const email = String(body.email || "").trim().toLowerCase();
@@ -30,10 +70,10 @@ export async function POST(request: Request) {
   if (existingProfile) {
     return NextResponse.json(
       {
-        error: "An account with this email already exists. Please log in instead.",
-        code: "EMAIL_ALREADY_EXISTS",
+        ok: true,
+        message: SIGNUP_SUCCESS_MESSAGE,
       },
-      { status: 409 }
+      { status: 200 }
     );
   }
 
@@ -51,14 +91,16 @@ export async function POST(request: Request) {
   });
 
   if (error) {
-    const message =
-      error.message?.toLowerCase().includes("already")
-        ? "An account with this email already exists. Please log in instead."
-        : error.message;
+    if (error.message?.toLowerCase().includes("already")) {
+      return NextResponse.json({
+        ok: true,
+        message: SIGNUP_SUCCESS_MESSAGE,
+      });
+    }
 
     return NextResponse.json(
       {
-        error: message || "Signup failed.",
+        error: error.message || "Signup failed.",
         code: "SIGNUP_FAILED",
       },
       { status: 400 }
@@ -67,6 +109,6 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     ok: true,
-    message: "Check your email to confirm your account.",
+    message: SIGNUP_SUCCESS_MESSAGE,
   });
 }

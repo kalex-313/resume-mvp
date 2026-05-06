@@ -162,6 +162,13 @@ export default function TermsPage() {
               materials, are owned by or licensed to RoleArc and are protected
               by intellectual property laws.
             </p>
+            <p>
+              You may not copy, clone, scrape, reproduce, resell, publish, or
+              create a competing service using substantial portions of the
+              Services, website design, templates, branding, or content without
+              our prior written permission, except where allowed by applicable
+              law.
+            </p>
 
             <h2>10. Termination</h2>
             <p>You may stop using the Services at any time.</p>

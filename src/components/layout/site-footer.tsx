@@ -15,6 +15,7 @@ export function SiteFooter() {
               className="h-10 w-auto object-contain"
             />
           </Link>
+          <p>© 2026 RoleArc. All rights reserved.</p>
         </div>
 
         <div className="flex flex-wrap gap-4">
