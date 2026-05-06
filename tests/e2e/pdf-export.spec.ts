@@ -71,8 +71,9 @@ test.describe("PDF export", () => {
     const fileBuffer = fs.readFileSync(savedPath);
     expect(fileBuffer.slice(0, 4).toString("utf8")).toBe("%PDF");
 
+    const saveDialog = page.waitForEvent("dialog");
     await page.getByRole("button", { name: /Save Draft/i }).click();
-    await expect(page.locator("span.text-slate-600").filter({ hasText: "Saved" })).toBeVisible();
+    await (await saveDialog).accept();
 
     await page.goto("/dashboard");
     page.once("dialog", async (dialog) => {
