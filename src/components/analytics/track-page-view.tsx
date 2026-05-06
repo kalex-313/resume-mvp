@@ -6,12 +6,19 @@ import { trackEvent } from "@/lib/analytics";
 type TrackPageViewProps = {
   eventName: string;
   eventParams?: Record<string, string | number | boolean | null | undefined>;
+  delayMs?: number;
 };
 
-export function TrackPageView({ eventName, eventParams }: TrackPageViewProps) {
+export function TrackPageView({ eventName, eventParams, delayMs = 1500 }: TrackPageViewProps) {
   useEffect(() => {
-    trackEvent(eventName, eventParams);
-  }, [eventName, eventParams]);
+    const timeoutId = window.setTimeout(() => {
+      trackEvent(eventName, eventParams);
+    }, delayMs);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [delayMs, eventName, eventParams]);
 
   return null;
 }
