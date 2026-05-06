@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 type Quota = {
   plan: "free" | "pro";
@@ -28,6 +29,12 @@ export function AIRewriteControls({
   const [tone, setTone] = useState<Tone>("balanced");
 
   async function runRewrite() {
+    trackEvent("ai_rewrite_click", {
+      section,
+      tone,
+      source: "resume_builder",
+    });
+
     const text = getText().trim();
 
     if (!text) {

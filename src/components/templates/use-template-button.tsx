@@ -27,9 +27,19 @@ export function UseTemplateButton({
     }
 
     if (locked) {
+      trackEvent("onboarding_step_click", {
+        step: "upgrade_from_template",
+        source: "template_gallery",
+        template_id: templateId,
+      });
       router.push("/upgrade");
       return;
     }
+
+    trackEvent("template_select", {
+      template_id: templateId,
+      source: "template_gallery",
+    });
 
     setLoading(true);
 

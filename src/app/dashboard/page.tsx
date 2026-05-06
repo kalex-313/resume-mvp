@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { DeleteResumeButton } from "@/components/dashboard/delete-resume-button";
+import { OnboardingCard } from "@/components/dashboard/onboarding-card";
 import { createResumeAction } from "./actions";
 import type { ResumeRecord } from "@/types/resume";
 
@@ -61,6 +62,8 @@ export default async function DashboardPage() {
             </button>
           </form>
         </div>
+
+        <OnboardingCard hasResumes={safeResumes.length > 0} />
 
         {safeResumes.length === 0 ? (
           <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
