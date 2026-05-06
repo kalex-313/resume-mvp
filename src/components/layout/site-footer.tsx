@@ -18,6 +18,15 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-wrap gap-4">
+          <Link href="/ai-resume-builder" className="hover:text-slate-900">
+            AI Resume Builder
+          </Link>
+          <Link href="/ats-resume-templates" className="hover:text-slate-900">
+            ATS Templates
+          </Link>
+          <Link href="/resume-pdf-export" className="hover:text-slate-900">
+            PDF Export
+          </Link>
           <Link href="/pricing" className="hover:text-slate-900">
             Pricing
           </Link>

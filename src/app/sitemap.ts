@@ -4,6 +4,9 @@ const siteUrl = "https://www.rolearc.xyz";
 
 const publicRoutes = [
   { path: "/", priority: 1 },
+  { path: "/ai-resume-builder", priority: 0.9 },
+  { path: "/ats-resume-templates", priority: 0.9 },
+  { path: "/resume-pdf-export", priority: 0.85 },
   { path: "/templates", priority: 0.85 },
   { path: "/pricing", priority: 0.8 },
   { path: "/contact", priority: 0.5 },
