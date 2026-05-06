@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
+import { TurnstileWidget } from "@/components/security/turnstile-widget";
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export default function SignupForm() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const handleTurnstileToken = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,6 +36,7 @@ export default function SignupForm() {
           email,
           password,
           redirectTo: `${window.location.origin}/auth/login`,
+          turnstileToken,
         }),
       });
 
@@ -45,6 +54,8 @@ export default function SignupForm() {
     } catch {
       setError("Signup failed.");
     } finally {
+      setTurnstileToken("");
+      setTurnstileResetKey((value) => value + 1);
       setLoading(false);
     }
   }
@@ -113,6 +124,12 @@ export default function SignupForm() {
             {error}
           </div>
         ) : null}
+
+        <TurnstileWidget
+          siteKey={turnstileSiteKey}
+          resetKey={turnstileResetKey}
+          onTokenChange={handleTurnstileToken}
+        />
 
         <button
           type="submit"

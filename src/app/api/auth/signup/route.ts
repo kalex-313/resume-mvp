@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+import { verifyTurnstileToken } from "@/lib/security/turnstile";
 
 const SIGNUP_SUCCESS_MESSAGE =
   "If this email can receive RoleArc account messages, we will send the next signup step shortly.";
@@ -28,10 +29,23 @@ export async function POST(request: Request) {
   const redirectTo =
     String(body.redirectTo || "").trim() ||
     `${process.env.NEXT_PUBLIC_SITE_URL}/auth/login`;
+  const turnstileToken = String(body.turnstileToken || "");
 
   if (!email || !password) {
     return NextResponse.json(
       { error: "Email and password are required." },
+      { status: 400 }
+    );
+  }
+
+  const turnstile = await verifyTurnstileToken(turnstileToken);
+
+  if (!turnstile.ok) {
+    return NextResponse.json(
+      {
+        error: "Verification failed. Please refresh the page and try again.",
+        code: "TURNSTILE_FAILED",
+      },
       { status: 400 }
     );
   }

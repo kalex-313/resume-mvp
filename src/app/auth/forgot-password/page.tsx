@@ -1,16 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { TurnstileWidget } from "@/components/security/turnstile-widget";
 
 const COOLDOWN_SECONDS = 60;
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const handleTurnstileToken = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
 
   useEffect(() => {
     if (cooldown <= 0) {
@@ -45,7 +52,7 @@ export default function ForgotPasswordPage() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, turnstileToken })
       });
 
       const data = await response.json();
@@ -68,6 +75,8 @@ export default function ForgotPasswordPage() {
     } catch {
       setError("Could not send reset email.");
     } finally {
+      setTurnstileToken("");
+      setTurnstileResetKey((value) => value + 1);
       setLoading(false);
     }
   }
@@ -112,6 +121,12 @@ export default function ForgotPasswordPage() {
                 {error}
               </div>
             ) : null}
+
+            <TurnstileWidget
+              siteKey={turnstileSiteKey}
+              resetKey={turnstileResetKey}
+              onTokenChange={handleTurnstileToken}
+            />
 
             <button
               type="submit"
