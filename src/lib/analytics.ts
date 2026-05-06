@@ -7,6 +7,18 @@ declare global {
   }
 }
 
+function ensureGtagFallback() {
+  window.dataLayer = window.dataLayer || [];
+
+  if (!window.gtag) {
+    window.gtag = function gtagFallback(command, eventName, params) {
+      window.dataLayer?.push(arguments);
+    };
+  }
+
+  return window.gtag;
+}
+
 export function trackEvent(eventName: string, params?: AnalyticsEventParams) {
   if (typeof window === "undefined") return;
 
@@ -15,11 +27,5 @@ export function trackEvent(eventName: string, params?: AnalyticsEventParams) {
     ...params,
   };
 
-  if (window.gtag) {
-    window.gtag("event", eventName, eventParams);
-    return;
-  }
-
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(["event", eventName, eventParams]);
+  ensureGtagFallback()("event", eventName, eventParams);
 }
