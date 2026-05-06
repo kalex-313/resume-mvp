@@ -193,7 +193,7 @@ export default async function PricingPage({ searchParams }: Props) {
               <div className="mt-6">
                 <TrackLink
                   href="/upgrade"
-                  eventName="start_checkout"
+                  eventName="upgrade_click"
                   eventParams={{
                     plan: "pro",
                     billing_period: "monthly",

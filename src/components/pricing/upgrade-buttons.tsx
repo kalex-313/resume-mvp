@@ -16,7 +16,7 @@ export function UpgradeButtons({ isPro }: { isPro: boolean }) {
   return (
     <TrackLink
       href="/upgrade"
-      eventName="start_checkout"
+      eventName="upgrade_click"
       eventParams={{
         plan: "pro",
         billing_period: "monthly",
