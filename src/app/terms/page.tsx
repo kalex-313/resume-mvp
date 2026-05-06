@@ -1,6 +1,14 @@
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
+export const metadata = {
+  title: "Terms of Service | RoleArc",
+  description: "Read the terms that apply when using RoleArc's resume builder, AI rewrite, PDF export, and subscription features.",
+  alternates: {
+    canonical: "/terms",
+  },
+};
+
 const LEGAL = {
   effectiveDate: "May 5, 2026",
   updatedDate: "May 5, 2026",

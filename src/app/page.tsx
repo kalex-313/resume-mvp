@@ -21,7 +21,7 @@ export default async function HomePage() {
         <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <p className="mb-4 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-600">
-              RoleArc Launch Prep
+              AI resume builder for serious job applications
             </p>
             <h1 className="max-w-3xl text-5xl font-bold tracking-tight text-slate-900">
               Create job-ready resumes with strong templates, cleaner wording, and a faster workflow

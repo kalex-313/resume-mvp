@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { TemplateCatalogGrid } from "@/components/templates/template-catalog";
@@ -5,6 +6,15 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/ai/quota";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Resume Templates | RoleArc",
+  description:
+    "Compare ATS-friendly, clean, business, and premium resume templates before building your next job application.",
+  alternates: {
+    canonical: "/templates",
+  },
+};
 
 export default async function TemplatesPage() {
   const supabase = await createClient();

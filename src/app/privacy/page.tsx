@@ -1,6 +1,14 @@
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
+export const metadata = {
+  title: "Privacy Policy | RoleArc",
+  description: "Learn how RoleArc handles account, resume, AI, subscription, and support information.",
+  alternates: {
+    canonical: "/privacy",
+  },
+};
+
 const LEGAL = {
   effectiveDate: "May 5, 2026",
   updatedDate: "May 5, 2026",

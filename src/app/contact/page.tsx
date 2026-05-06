@@ -3,6 +3,14 @@ import { SiteFooter } from "@/components/layout/site-footer";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Contact | RoleArc",
+  description: "Contact RoleArc for resume builder support, billing questions, account access, and product help.",
+  alternates: {
+    canonical: "/contact",
+  },
+};
+
 export default function ContactPage() {
   const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME || "RoleArc";
   const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@rolearc.xyz";

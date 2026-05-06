@@ -8,6 +8,15 @@ import { ATSFriendlyNote } from "@/components/common/ats-friendly-note";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Pricing | RoleArc",
+  description:
+    "Start free with RoleArc, then upgrade to Pro for unlimited AI rewriting, premium templates, and professional PDF export.",
+  alternates: {
+    canonical: "/pricing",
+  },
+};
+
 type Props = {
   searchParams: Promise<{ upgrade?: string }>;
 };
