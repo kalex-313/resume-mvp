@@ -164,7 +164,13 @@ test.describe("Billing cancellation flow", () => {
             customer: profile.stripe_customer_id,
             status: "active",
             cancel_at_period_end: true,
-            current_period_end: futurePeriodEnd,
+            items: {
+              data: [
+                {
+                  current_period_end: futurePeriodEnd,
+                },
+              ],
+            },
           },
         },
       });
@@ -244,7 +250,13 @@ test.describe("Billing cancellation flow", () => {
             customer: profile.stripe_customer_id,
             status: "canceled",
             cancel_at_period_end: false,
-            current_period_end: futurePeriodEnd,
+            items: {
+              data: [
+                {
+                  current_period_end: futurePeriodEnd,
+                },
+              ],
+            },
           },
         },
       });

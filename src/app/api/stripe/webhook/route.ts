@@ -9,9 +9,17 @@ function toIso(seconds: number | null | undefined): string | null {
 }
 
 function getSubscriptionPeriodEnd(
-  subscription: Stripe.Subscription & { current_period_end?: number }
+  subscription: Stripe.Subscription & {
+    current_period_end?: number;
+    items?: {
+      data?: Array<{ current_period_end?: number; billed_until?: number | null }>;
+    };
+  }
 ): string | null {
-  return toIso(subscription.current_period_end);
+  const itemPeriodEnd = subscription.items?.data?.[0]?.current_period_end;
+  const billedUntil = subscription.items?.data?.[0]?.billed_until;
+
+  return toIso(subscription.current_period_end ?? itemPeriodEnd ?? billedUntil);
 }
 
 export async function POST(request: Request) {
