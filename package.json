@@ -10,7 +10,8 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
-    "backup:supabase": "powershell -ExecutionPolicy Bypass -File scripts/backup-supabase.ps1"
+    "backup:supabase": "powershell -ExecutionPolicy Bypass -File scripts/backup-supabase.ps1",
+    "security:baseline": "powershell -ExecutionPolicy Bypass -File scripts/create-security-baseline.ps1 -AppName RoleArc -Domain rolearc.xyz -SupportEmail support@rolearc.xyz"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
