@@ -61,9 +61,43 @@ export default async function PricingPage({ searchParams }: Props) {
     !!profileStatus?.cancel_at_period_end &&
     !!profileStatus?.current_period_end &&
     new Date(profileStatus.current_period_end).getTime() > Date.now();
+  const pricingFaqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Can I try RoleArc before paying?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Free lets you create and save resumes before upgrading.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "When should I upgrade?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Upgrade when you want unlimited AI rewrites, premium templates, or PDF export.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is PDF export included in Free?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "PDF export is a Pro feature so the free plan can stay useful for drafting and testing.",
+        },
+      },
+    ],
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqSchema) }}
+      />
       <TrackPageView
         eventName="pricing_view"
         eventParams={{
@@ -79,14 +113,14 @@ export default async function PricingPage({ searchParams }: Props) {
               Choose your plan
             </p>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Upgrade only when you need stronger output
+              Start free. Upgrade when your resume is ready to finish.
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-              Start free, test the workflow, then unlock stronger templates, unlimited AI rewriting,
-              and polished PDF export when you are ready to apply seriously.
+              Use the builder first, save your draft, and only pay when you want unlimited AI rewriting,
+              premium templates, and polished PDF export for serious applications.
             </p>
             <p className="mt-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
-              You can create an account and try the resume builder before paying. No credit card is needed for the Free plan.
+              Free is for drafting and testing. Pro is for finishing, exporting, and applying with a cleaner final resume.
             </p>
             <p className="mt-3 text-sm text-slate-500">
               Current plan: <span className="font-semibold">{proEnabled ? "Pro" : "Free"}</span>
@@ -130,7 +164,7 @@ export default async function PricingPage({ searchParams }: Props) {
                 <span className="pb-1 text-sm text-slate-500">/month</span>
               </div>
               <p className="mt-2 text-sm text-slate-600">
-                Create your first draft, test AI rewrite, and decide later if Pro is worth it.
+                Create your first draft, test the editor, and see whether RoleArc fits your workflow.
               </p>
             </div>
 
@@ -138,6 +172,7 @@ export default async function PricingPage({ searchParams }: Props) {
               <li>Build resumes</li>
               <li>Save drafts</li>
               <li>Limited AI rewrites</li>
+              <li>Core templates included</li>
               <li>PDF export locked</li>
               <li>Premium templates locked</li>
             </ul>
@@ -170,10 +205,10 @@ export default async function PricingPage({ searchParams }: Props) {
                   <span className="pb-1 text-sm text-slate-500">{PRO_PRICE_PERIOD}</span>
                 </div>
                 <p className="mt-2 text-sm font-semibold text-slate-900">
-                  Unlock stronger output when your resume is ready
+                  Finish faster when you are ready to apply
                 </p>
                 <p className="mt-2 text-sm text-slate-600">
-                  Use Pro for unlimited rewriting, premium layouts, and polished export-ready PDFs.
+                  Use Pro for unlimited rewriting, premium layouts, and polished export-ready PDFs without rebuilding your draft.
                 </p>
               </div>
               <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
@@ -186,11 +221,11 @@ export default async function PricingPage({ searchParams }: Props) {
               <li>All premium templates</li>
               <li>Professional PDF export</li>
               <li>ATS-optimized formatting</li>
-              <li>Faster editing workflow</li>
+              <li>Keep editing after upgrade</li>
             </ul>
 
             <p className="mt-4 text-xs text-slate-500">
-              Best after you have a serious resume draft and want a cleaner final version.
+              Best after you have a serious resume draft and want a cleaner final version for applications.
             </p>
 
             <div className="mt-6 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
@@ -217,12 +252,65 @@ export default async function PricingPage({ searchParams }: Props) {
                   }}
                   className="inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-3 text-sm font-medium text-white hover:opacity-95"
                 >
-                  Start My Pro Plan
+                  Unlock Pro
                 </TrackLink>
               </div>
             ) : null}
           </div>
         </div>
+
+        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="grid gap-6 md:grid-cols-3">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">No credit card for Free</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Create an account, try the builder, and decide later.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Upgrade keeps your draft</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Your saved resume stays in the builder when Pro unlocks export and premium templates.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Manage billing anytime</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Subscribers can open the billing portal from the pricing page.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <h2 className="text-2xl font-semibold text-slate-900">Common pricing questions</h2>
+          <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <div>
+              <h3 className="font-medium text-slate-900">Can I try RoleArc before paying?</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Yes. Free lets you create and save resumes before upgrading.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-slate-900">When should I upgrade?</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Upgrade when you want unlimited AI rewrites, premium templates, or PDF export.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-slate-900">Will Pro improve my existing draft?</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Yes. You can keep editing the same saved resume after Pro unlocks more tools.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-slate-900">Is PDF export included in Free?</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                PDF export is a Pro feature so the free plan can stay useful for drafting and testing.
+              </p>
+            </div>
+          </div>
+        </section>
 
         <div className="mt-8">
           <ATSFriendlyNote />

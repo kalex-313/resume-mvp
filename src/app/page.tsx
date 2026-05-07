@@ -14,21 +14,40 @@ export default async function HomePage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   const user = data.user;
+  const appSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "RoleArc",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: "https://www.rolearc.xyz",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    description:
+      "RoleArc is an AI resume builder for creating cleaner drafts, improving resume wording, and exporting polished PDFs.",
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+      />
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-6 py-16">
         <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <p className="mb-4 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-600">
-              AI resume builder for serious job applications
+              AI resume builder for real job applications
             </p>
             <h1 className="max-w-3xl text-5xl font-bold tracking-tight text-slate-900">
-              Build a cleaner resume for your next job application
+              Turn a rough resume into a cleaner application-ready draft
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Start free, choose an ATS-friendly template, use AI to improve weak wording, and upgrade when you are ready to export a polished PDF.
+              Start free, choose an ATS-friendly template, improve weak wording with AI, and upgrade only when you need premium templates or polished PDF export.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -38,32 +57,32 @@ export default async function HomePage() {
                 eventParams={{ source: "home_hero" }}
                 className="rounded-xl bg-brand-600 px-5 py-3 text-white"
               >
-                {user ? "Open Dashboard" : "Start Free"}
+                {user ? "Open Dashboard" : "Build My Resume Free"}
               </TrackLink>
               <Link
                 href="/pricing"
                 className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-slate-700"
               >
-                See Pro Features
+                Compare Free vs Pro
               </Link>
             </div>
 
             <p className="mt-3 text-sm text-slate-500">
-              No credit card needed to start. Upgrade only when you want unlimited AI rewrite and PDF export.
+              No credit card needed to start. Your draft stays editable before you decide to upgrade.
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Templates</p>
-                <p className="mt-2 text-2xl font-semibold text-slate-900">6</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Start</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">Free</p>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">AI Rewrite</p>
-                <p className="mt-2 text-2xl font-semibold text-slate-900">Built-in</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Improve</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">AI rewrite</p>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Export</p>
-                <p className="mt-2 text-2xl font-semibold text-slate-900">PDF</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Finish</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">PDF export</p>
               </div>
             </div>
           </div>
@@ -90,6 +109,31 @@ export default async function HomePage() {
                     Turn the final version into a professional downloadable resume.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="grid gap-5 md:grid-cols-[0.85fr_1.15fr] md:items-center">
+            <div>
+              <p className="text-sm font-medium text-brand-600">Why people try RoleArc first</p>
+              <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                Useful before payment, stronger when you are ready to apply
+              </h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-900">Draft before you pay</p>
+                <p className="mt-1 text-sm text-slate-600">Create and save a resume before choosing Pro.</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-900">Rewrite weak bullets</p>
+                <p className="mt-1 text-sm text-slate-600">Turn plain wording into clearer resume language.</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-900">Export when finished</p>
+                <p className="mt-1 text-sm text-slate-600">Use Pro when you want the polished PDF version.</p>
               </div>
             </div>
           </div>
