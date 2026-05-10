@@ -2,10 +2,15 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { CheckoutForm } from "@/components/pricing/checkout-form";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-export default function UpgradePage() {
+export default async function UpgradePage() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <SiteHeader />
@@ -48,7 +53,24 @@ export default function UpgradePage() {
             Back
           </Link>
 
-          <CheckoutForm />
+          {user ? (
+            <CheckoutForm />
+          ) : (
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                href="/auth/signup"
+                className="rounded-xl bg-brand-600 px-6 py-3 text-white hover:opacity-95"
+              >
+                Create account first
+              </Link>
+              <Link
+                href="/auth/login"
+                className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-slate-700 hover:bg-slate-50"
+              >
+                Log in to continue
+              </Link>
+            </div>
+          )}
         </div>
       </main>
 
