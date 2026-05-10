@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const siteUrl = "https://www.rolearc.xyz";
+const lastModified = new Date("2026-05-10T00:00:00.000Z");
 
 const publicRoutes = [
   { path: "/", priority: 1 },
@@ -19,11 +20,9 @@ const publicRoutes = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
   return publicRoutes.map((route) => ({
     url: new URL(route.path, siteUrl).toString(),
-    lastModified: now,
+    lastModified,
     changeFrequency: "weekly",
     priority: route.priority,
   }));
