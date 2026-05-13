@@ -41,6 +41,70 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/resume-builder",
+        destination: "/ai-resume-builder",
+        permanent: true,
+      },
+      {
+        source: "/ai-resume",
+        destination: "/ai-resume-builder",
+        permanent: true,
+      },
+      {
+        source: "/resume-templates",
+        destination: "/templates",
+        permanent: true,
+      },
+      {
+        source: "/ats-templates",
+        destination: "/ats-resume-templates",
+        permanent: true,
+      },
+      {
+        source: "/pdf-export",
+        destination: "/resume-pdf-export",
+        permanent: true,
+      },
+      {
+        source: "/features",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/login",
+        destination: "/auth/login",
+        permanent: true,
+      },
+      {
+        source: "/signup",
+        destination: "/auth/signup",
+        permanent: true,
+      },
+      {
+        source: "/checkout",
+        destination: "/upgrade",
+        permanent: true,
+      },
+      {
+        source: "/billing",
+        destination: "/pricing",
+        permanent: true,
+      },
+      {
+        source: "/cvforge",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/cvforge/:path*",
+        destination: "/",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
