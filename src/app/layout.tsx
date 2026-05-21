@@ -16,9 +16,13 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-touch-icon.svg", type: "image/svg+xml" }],
-    shortcut: ["/favicon.svg"],
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/favicon.ico"],
   },
   openGraph: {
     title: `${appName} | AI Resume Builder`,
@@ -26,11 +30,13 @@ export const metadata: Metadata = {
     url: "/",
     siteName: appName,
     type: "website",
+    images: [{ url: "/logo.png", width: 1560, height: 384, alt: "RoleArc" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: `${appName} | AI Resume Builder`,
     description,
+    images: ["/logo.png"],
   },
 };
 

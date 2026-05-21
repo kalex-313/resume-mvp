@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { TurnstileWidget } from "@/components/security/turnstile-widget";
+import { trackEvent } from "@/lib/analytics";
 
 const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -24,6 +25,7 @@ export default function SignupForm() {
     setLoading(true);
     setMessage(null);
     setError(null);
+    trackEvent("signup_submit", { source: "signup_page" });
 
     try {
       const response = await fetch("/api/auth/signup", {
@@ -43,15 +45,24 @@ export default function SignupForm() {
       const data = await response.json();
 
       if (!response.ok) {
+        trackEvent("signup_failed", {
+          source: "signup_page",
+          code: data?.code || "unknown",
+        });
         setError(data?.error || "Signup failed.");
         return;
       }
 
+      trackEvent("signup_success", { source: "signup_page" });
       setMessage(data?.message || "Check your email to confirm your account.");
       setFullName("");
       setEmail("");
       setPassword("");
     } catch {
+      trackEvent("signup_failed", {
+        source: "signup_page",
+        code: "network_error",
+      });
       setError("Signup failed.");
     } finally {
       setTurnstileToken("");

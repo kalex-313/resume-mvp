@@ -231,8 +231,15 @@ export function PDFDownloadButton({
 
       const safeName = sanitizeFileName(fileName) || "resume";
       pdf.save(`${safeName}.pdf`);
+      trackEvent("pdf_export_success", {
+        source: "resume_builder",
+        page_count: pages.length,
+      });
     } catch (error) {
       console.error("PDF export failed:", error);
+      trackEvent("pdf_export_failed", {
+        source: "resume_builder",
+      });
       alert("PDF export failed. Please try again.");
     } finally {
       stage.remove();

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+import { sendFirstResumeEmail } from "@/lib/email/lifecycle";
 
 const createResumeRateLimitResponse = rateLimitResponse(
   "Too many resume creation attempts. Please wait a few minutes and try again."
@@ -26,6 +27,11 @@ export async function POST() {
     return createResumeRateLimitResponse(rateLimit);
   }
 
+  const { count: existingResumeCount } = await supabase
+    .from("resumes")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", authData.user.id);
+
   const { data, error } = await supabase
     .from("resumes")
     .insert({
@@ -48,6 +54,10 @@ export async function POST() {
 
   revalidatePath("/dashboard");
   revalidatePath(`/builder/${data.id}`);
+
+  if ((existingResumeCount ?? 0) === 0) {
+    await sendFirstResumeEmail(authData.user.email);
+  }
 
   return NextResponse.json({ id: data.id });
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { trackEvent } from "@/lib/analytics";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function LoginForm() {
     event.preventDefault();
     setLoading(true);
     setError(null);
+    trackEvent("login_submit", { source: "login_page" });
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -25,11 +27,16 @@ export default function LoginForm() {
     });
 
     if (error) {
+      trackEvent("login_failed", {
+        source: "login_page",
+        code: error.name || "auth_error",
+      });
       setError(error.message || "Could not log in.");
       setLoading(false);
       return;
     }
 
+    trackEvent("login_success", { source: "login_page" });
     router.push("/dashboard");
     router.refresh();
   }

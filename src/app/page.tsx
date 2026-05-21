@@ -59,12 +59,14 @@ export default async function HomePage() {
               >
                 {user ? "Open Dashboard" : "Build My Resume Free"}
               </TrackLink>
-              <Link
+              <TrackLink
                 href="/pricing"
+                eventName="pricing_compare_click"
+                eventParams={{ source: "home_hero" }}
                 className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-slate-700"
               >
                 Compare Free vs Pro
-              </Link>
+              </TrackLink>
             </div>
 
             <p className="mt-3 text-sm text-slate-500">

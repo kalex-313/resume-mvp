@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { headers } from "next/headers";
 import { getStripeServer } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendProActivatedEmail } from "@/lib/email/lifecycle";
 
 function toIso(seconds: number | null | undefined): string | null {
   if (!seconds) return null;
@@ -52,6 +53,12 @@ export async function POST(request: Request) {
       if (!userId) {
         console.error("Stripe webhook: missing user_id metadata on checkout session.");
       } else {
+        const { data: profile } = await admin
+          .from("profiles")
+          .select("email")
+          .eq("id", userId)
+          .maybeSingle();
+
         const { error } = await admin
           .from("profiles")
           .update({
@@ -69,6 +76,7 @@ export async function POST(request: Request) {
         }
 
         console.log("Stripe webhook upgraded user to pro:", userId);
+        await sendProActivatedEmail(profile?.email);
       }
     }
 

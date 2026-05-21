@@ -62,21 +62,44 @@ export function AIRewriteControls({
 
       if (!response.ok) {
         if (data?.code === "FREE_QUOTA_EXHAUSTED") {
+          trackEvent("ai_rewrite_quota_exhausted", {
+            section,
+            tone,
+            source: "resume_builder",
+          });
           window.location.href = "/upgrade";
           return;
         }
 
+        trackEvent("ai_rewrite_failed", {
+          section,
+          tone,
+          source: "resume_builder",
+          code: data?.code || "unknown",
+        });
         alert(data?.error || "AI rewrite failed.");
         onQuotaUpdate?.(data?.quota || null);
         return;
       }
 
       if (typeof data.text === "string" && data.text.trim()) {
+        trackEvent("ai_rewrite_success", {
+          section,
+          tone,
+          source: "resume_builder",
+          provider: data.provider || "unknown",
+        });
         onApply(data.text.trim());
       }
 
       onQuotaUpdate?.(data?.quota || null);
     } catch {
+      trackEvent("ai_rewrite_failed", {
+        section,
+        tone,
+        source: "resume_builder",
+        code: "network_error",
+      });
       alert("AI rewrite failed.");
     } finally {
       setLoading(false);

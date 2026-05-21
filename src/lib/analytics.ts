@@ -1,3 +1,5 @@
+import { track as trackVercelEvent } from "@vercel/analytics";
+
 type AnalyticsEventParams = Record<string, string | number | boolean | null | undefined>;
 
 declare global {
@@ -28,4 +30,5 @@ export function trackEvent(eventName: string, params?: AnalyticsEventParams) {
   };
 
   ensureGtagFallback()("event", eventName, eventParams);
+  trackVercelEvent(eventName, eventParams);
 }

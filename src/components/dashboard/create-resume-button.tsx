@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 export function CreateResumeButton() {
   const [loading, setLoading] = useState(false);
@@ -9,13 +10,16 @@ export function CreateResumeButton() {
 
   async function handleCreate() {
     setLoading(true);
+    trackEvent("resume_create_click", { source: "dashboard" });
     try {
       const response = await fetch("/api/resumes", { method: "POST" });
       if (!response.ok) throw new Error("Failed to create resume");
       const data = await response.json();
+      trackEvent("resume_create_success", { source: "dashboard" });
       router.push(`/builder/${data.id}`);
       router.refresh();
     } catch {
+      trackEvent("resume_create_failed", { source: "dashboard" });
       alert("Could not create resume.");
       setLoading(false);
     }
