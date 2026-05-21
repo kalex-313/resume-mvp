@@ -55,9 +55,21 @@ export async function POST() {
   revalidatePath("/dashboard");
   revalidatePath(`/builder/${data.id}`);
 
+  let firstResumeEmail: Awaited<ReturnType<typeof sendFirstResumeEmail>> | null = null;
+
   if ((existingResumeCount ?? 0) === 0) {
-    await sendFirstResumeEmail(authData.user.email);
+    firstResumeEmail = await sendFirstResumeEmail(authData.user.email);
+
+    if (firstResumeEmail.status !== "sent") {
+      console.error("First resume email was not sent:", {
+        userId: authData.user.id,
+        emailStatus: firstResumeEmail,
+      });
+    }
   }
 
-  return NextResponse.json({ id: data.id });
+  return NextResponse.json({
+    id: data.id,
+    firstResumeEmail,
+  });
 }

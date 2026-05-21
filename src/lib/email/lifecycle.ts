@@ -63,7 +63,7 @@ export async function sendLifecycleEmail(message: LifecycleEmail): Promise<Lifec
 }
 
 export async function sendFirstResumeEmail(to?: string | null) {
-  await sendLifecycleEmail({
+  return sendLifecycleEmail({
     to,
     subject: "Welcome to RoleArc",
     text:
@@ -77,7 +77,7 @@ export async function sendFirstResumeEmail(to?: string | null) {
 }
 
 export async function sendProActivatedEmail(to?: string | null) {
-  await sendLifecycleEmail({
+  return sendLifecycleEmail({
     to,
     subject: "RoleArc Pro is active",
     text:
