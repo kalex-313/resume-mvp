@@ -240,6 +240,7 @@ export function ResumeEditor({
   const [languagesOpen, setLanguagesOpen] = useState(true);
   const [certificationsOpen, setCertificationsOpen] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
+  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
 
   const skillsText = useMemo(() => content.skills.join(", "), [content.skills]);
   const pdfEnabled = initialPlan === "pro";
@@ -462,8 +463,42 @@ export function ResumeEditor({
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div>
+      <div className="sticky top-0 z-20 -mx-6 mb-4 border-y border-slate-200 bg-white/95 px-6 py-3 backdrop-blur lg:hidden">
+        <div className="grid grid-cols-2 rounded-xl border border-slate-200 bg-slate-50 p-1 text-sm font-medium">
+          <button
+            type="button"
+            onClick={() => setMobileView("edit")}
+            aria-pressed={mobileView === "edit"}
+            className={`rounded-lg px-3 py-2 ${
+              mobileView === "edit"
+                ? "bg-white text-slate-950 shadow-sm"
+                : "text-slate-600"
+            }`}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileView("preview")}
+            aria-pressed={mobileView === "preview"}
+            className={`rounded-lg px-3 py-2 ${
+              mobileView === "preview"
+                ? "bg-white text-slate-950 shadow-sm"
+                : "text-slate-600"
+            }`}
+          >
+            Preview
+          </button>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <div
+        className={`rounded-2xl border border-slate-200 bg-white p-6 shadow-sm ${
+          mobileView === "preview" ? "hidden lg:block" : ""
+        }`}
+      >
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-semibold">Resume Builder</h1>
@@ -1227,12 +1262,17 @@ export function ResumeEditor({
         </div>
       </div>
 
-      <div className="lg:sticky lg:top-6 lg:self-start">
+      <div
+        className={`lg:sticky lg:top-6 lg:self-start ${
+          mobileView === "edit" ? "hidden lg:block" : ""
+        }`}
+      >
         <ResumePreview
           title={title}
           templateId={templateId}
           content={content}
         />
+      </div>
       </div>
     </div>
   );
