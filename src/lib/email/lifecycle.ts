@@ -51,13 +51,14 @@ export async function sendLifecycleEmail(message: LifecycleEmail) {
 export async function sendFirstResumeEmail(to?: string | null) {
   await sendLifecycleEmail({
     to,
-    subject: "Your first RoleArc resume is ready to shape",
+    subject: "Welcome to RoleArc",
     text:
-      "Thanks for starting your first resume in RoleArc.\n\n" +
-      "A good next step is to fill in your work, project, or education details, then use AI Rewrite on the sections that sound too plain.\n\n" +
-      "When the resume feels ready, you can choose a cleaner template and export a polished PDF with Pro.\n\n" +
-      "Open RoleArc: https://www.rolearc.xyz/dashboard\n\n" +
-      "RoleArc",
+      "Hi,\n\n" +
+      "Thanks for creating your first resume in RoleArc.\n\n" +
+      "You can continue editing it here:\n" +
+      "https://www.rolearc.xyz/dashboard\n\n" +
+      "Best,\n" +
+      "The RoleArc team",
   });
 }
 
@@ -66,9 +67,11 @@ export async function sendProActivatedEmail(to?: string | null) {
     to,
     subject: "RoleArc Pro is active",
     text:
-      "Your RoleArc Pro access is active.\n\n" +
-      "You can now use Pro features such as premium templates and polished PDF export for your resume workflow.\n\n" +
-      "Open your dashboard: https://www.rolearc.xyz/dashboard\n\n" +
-      "RoleArc",
+      "Hi,\n\n" +
+      "Your RoleArc Pro access is now active.\n\n" +
+      "You can manage your resumes here:\n" +
+      "https://www.rolearc.xyz/dashboard\n\n" +
+      "Best,\n" +
+      "The RoleArc team",
   });
 }
