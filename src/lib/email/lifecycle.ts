@@ -4,21 +4,26 @@ type LifecycleEmail = {
   text: string;
 };
 
+type LifecycleEmailResult =
+  | { status: "sent" }
+  | { status: "skipped"; reason: string }
+  | { status: "failed"; statusCode?: number; error: string };
+
 const fromEmail = process.env.EMAIL_FROM || "RoleArc <support@rolearc.xyz>";
 
 function isEmailEnabled() {
   return Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
 }
 
-export async function sendLifecycleEmail(message: LifecycleEmail) {
-  if (!message.to) return;
+export async function sendLifecycleEmail(message: LifecycleEmail): Promise<LifecycleEmailResult> {
+  if (!message.to) return { status: "skipped", reason: "missing_recipient" };
 
   if (!isEmailEnabled()) {
     console.info("Lifecycle email skipped; email provider is not configured:", {
       to: message.to,
       subject: message.subject,
     });
-    return;
+    return { status: "skipped", reason: "email_provider_not_configured" };
   }
 
   try {
@@ -39,12 +44,21 @@ export async function sendLifecycleEmail(message: LifecycleEmail) {
     if (!response.ok) {
       const errorText = await response.text().catch(() => "");
       console.error("Lifecycle email failed:", response.status, errorText);
+      return {
+        status: "failed",
+        statusCode: response.status,
+        error: errorText || "Resend request failed.",
+      };
     }
+
+    return { status: "sent" };
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown email error";
     console.error(
       "Lifecycle email request failed:",
-      error instanceof Error ? error.message : "Unknown email error"
+      message
     );
+    return { status: "failed", error: message };
   }
 }
 
