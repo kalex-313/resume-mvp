@@ -5,7 +5,7 @@ type LifecycleEmail = {
 };
 
 type LifecycleEmailResult =
-  | { status: "sent" }
+  | { status: "sent"; id?: string }
   | { status: "skipped"; reason: string }
   | { status: "failed"; statusCode?: number; error: string };
 
@@ -51,7 +51,12 @@ export async function sendLifecycleEmail(message: LifecycleEmail): Promise<Lifec
       };
     }
 
-    return { status: "sent" };
+    const data = await response.json().catch(() => null);
+
+    return {
+      status: "sent",
+      id: typeof data?.id === "string" ? data.id : undefined,
+    };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown email error";
     console.error(
