@@ -24,10 +24,17 @@ test.describe("mobile builder UX", () => {
 
     const fullName = `Mobile Tester ${Date.now()}`;
     await page.getByPlaceholder("Full name").fill(fullName);
+    await page
+      .getByPlaceholder("Excel, Customer Service, Inventory Control")
+      .fill("Excel, Customer Service\nInventory Control");
 
     await page.getByRole("button", { name: "Preview" }).click();
     await expect(page.locator("#resume-preview-export")).toBeVisible();
     await expect(page.locator("#resume-preview-export")).toContainText(fullName);
+    const preview = page.locator("#resume-preview-export");
+    await expect(preview.getByText("Excel", { exact: true })).toBeVisible();
+    await expect(preview.getByText("Customer Service", { exact: true })).toBeVisible();
+    await expect(preview.getByText("Inventory Control", { exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Resume Builder" })).toHaveCount(0);
 
     const overflowX = await page.evaluate(

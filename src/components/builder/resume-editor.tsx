@@ -166,7 +166,7 @@ function parseStoredDate(value: string): ParsedDate {
     };
   }
 
-  const zhYearMatch = raw.match(/^(\d{4})撟?/);
+  const zhYearMatch = raw.match(/^(\d{4})/);
   if (zhYearMatch) {
     return { month: "", year: zhYearMatch[1], present: false };
   }
@@ -1251,7 +1251,7 @@ export function ResumeEditor({
                 setContent({
                   ...content,
                   skills: value
-                    .split(/[,.嚗n]/)
+                    .split(/[,;\n]+/)
                     .map((item) => item.trim())
                     .filter(Boolean),
                 });
