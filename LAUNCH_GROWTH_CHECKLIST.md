@@ -41,3 +41,11 @@
 - Add one useful section that answers the query more directly.
 - Link from homepage or related SEO pages if the page is important.
 - Wait at least one week before judging the result.
+
+## Directory Follow-up Loop
+
+- Keep `DIRECTORY_SUBMISSIONS.md` updated after every submission, approval, rejection, or paid-listing decision.
+- Check only a small batch each week so directory work does not crowd out product and SEO improvements.
+- Use UTM links where the directory allows editing the website URL.
+- Prioritize Product Hunt, SaaSHub, Futurepedia, and AlternativeTo before trying more generic AI directories.
+- Skip paid directory placements until referral traffic or revenue suggests a clear return.
