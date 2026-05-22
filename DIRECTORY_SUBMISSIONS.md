@@ -22,7 +22,7 @@ Use this file as the source of truth for free or low-cost directory submissions.
 | Directory | Status | URL / Location | Next Step | Follow-up Date | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Product Hunt | Launched | `https://www.producthunt.com/products/rolearc` | Watch followers, points, comments, and referral traffic. Reply politely to useful comments. | 2026-05-29 | Current baseline captured in ROL-5: launched this week, 1 point, 2 followers. |
-| SaaSHub | Submitted / filled | SaaSHub RoleArc manage/listing page | Check whether the public listing is approved and visible. If live, capture URL here. | 2026-05-29 | Do not add paid badges or paid promos yet. |
+| SaaSHub | Approved / live | `https://www.saashub.com/rolearc` | Watch referral traffic and reviews. Recheck pricing display after SaaSHub refreshes the public page. | 2026-05-29 | Active and verified on 2026-05-22. Pricing settings updated to show free option plus paid Pro option. |
 | Futurepedia | Attempted / submitted | Futurepedia submit flow | Check approval email or public search result. If approved, capture URL here. | 2026-05-29 | Keep description consistent with AI resume builder positioning. |
 | AlternativeTo | Submitted / pending approval | Private pending review page | Wait for approval notification, then capture the public listing URL and check referral traffic. | 2026-05-26 | Submitted on 2026-05-22. Added alternatives: Kickresume, Zety, Rezi. Do not share until approved. |
 | TAAFT | Skipped | Paid listing flow | Skip unless RoleArc has enough revenue to justify directory spend. | 2026-06-30 | Paid package was shown; not worth it at current stage. |
