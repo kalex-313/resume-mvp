@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +10,21 @@ import { PricingComparison } from "@/components/marketing/pricing-comparison";
 import { TrackLink } from "@/components/analytics/track-link";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "RoleArc | AI Resume Builder for ATS-Friendly Resumes",
+  description:
+    "Create an ATS-friendly resume with AI rewrite, clean resume templates, and polished PDF export. Start free with RoleArc and improve your resume before applying.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "RoleArc | AI Resume Builder for ATS-Friendly Resumes",
+    description:
+      "Build a cleaner, job-ready resume with AI rewrite, ATS-friendly templates, and polished PDF export.",
+    url: "/",
+  },
+};
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -27,7 +43,7 @@ export default async function HomePage() {
       priceCurrency: "USD",
     },
     description:
-      "RoleArc is an AI resume builder for creating cleaner drafts, improving resume wording, and exporting polished PDFs.",
+      "RoleArc is an AI resume builder for creating ATS-friendly resumes, improving resume wording, and exporting polished PDFs.",
   };
 
   return (
@@ -41,13 +57,14 @@ export default async function HomePage() {
         <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <p className="mb-4 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-600">
-              AI resume builder for real job applications
+              AI resume builder for ATS-friendly job applications
             </p>
             <h1 className="max-w-3xl text-5xl font-bold tracking-tight text-slate-900">
-              Turn a rough resume into a cleaner application-ready draft
+              Build a cleaner, job-ready resume before you apply
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Start free, choose an ATS-friendly template, improve weak wording with AI, and upgrade only when you need premium templates or polished PDF export.
+              Start free with a practical resume builder, choose an ATS-friendly template, improve weak bullet
+              points with AI, and export a polished PDF when your resume is ready.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -57,7 +74,7 @@ export default async function HomePage() {
                 eventParams={{ source: "home_hero" }}
                 className="rounded-xl bg-brand-600 px-5 py-3 text-white"
               >
-                {user ? "Open Dashboard" : "Build My Resume Free"}
+                {user ? "Open Dashboard" : "Create My Resume Free"}
               </TrackLink>
               <TrackLink
                 href="/pricing"
@@ -70,7 +87,7 @@ export default async function HomePage() {
             </div>
 
             <p className="mt-3 text-sm text-slate-500">
-              No credit card needed to start. Your draft stays editable before you decide to upgrade.
+              No credit card needed to start. Write, save, and edit your resume before deciding whether Pro is worth it.
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -121,21 +138,21 @@ export default async function HomePage() {
             <div>
               <p className="text-sm font-medium text-brand-600">Why people try RoleArc first</p>
               <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-                Useful before payment, stronger when you are ready to apply
+                Useful before payment, stronger when your resume is ready to send
               </h2>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="rounded-2xl bg-slate-50 p-4">
                 <p className="text-sm font-semibold text-slate-900">Draft before you pay</p>
-                <p className="mt-1 text-sm text-slate-600">Create and save a resume before choosing Pro.</p>
+                <p className="mt-1 text-sm text-slate-600">Create and save your first resume before choosing Pro.</p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
                 <p className="text-sm font-semibold text-slate-900">Rewrite weak bullets</p>
-                <p className="mt-1 text-sm text-slate-600">Turn plain wording into clearer resume language.</p>
+                <p className="mt-1 text-sm text-slate-600">Turn vague work notes into clearer resume bullet points.</p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
                 <p className="text-sm font-semibold text-slate-900">Export when finished</p>
-                <p className="mt-1 text-sm text-slate-600">Use Pro when you want the polished PDF version.</p>
+                <p className="mt-1 text-sm text-slate-600">Use Pro when you want premium templates and a polished PDF.</p>
               </div>
             </div>
           </div>
@@ -175,9 +192,9 @@ export default async function HomePage() {
           <div className="mb-6">
             <h2 className="text-3xl font-bold text-slate-900">Start from the resume path that fits you</h2>
             <p className="mt-2 max-w-3xl text-slate-600">
-              Different job searches need different resume angles. Choose a focused RoleArc page for AI rewriting,
-              ATS-friendly templates, Canadian applications, student resumes, career changes, entry level roles,
-              or polished PDF export.
+              Different job searches need different resume angles. Choose a focused RoleArc page for AI resume
+              rewriting, ATS-friendly templates, Canadian applications, student resumes, career changes, entry level
+              roles, or polished PDF export.
             </p>
           </div>
 
