@@ -9,16 +9,16 @@ export async function SiteHeader() {
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <Link href="/" className="flex items-center">
           <img
             src="/logo.svg"
             alt="RoleArc"
-            className="h-11 w-auto object-contain"
+            className="h-10 w-auto object-contain sm:h-11"
           />
         </Link>
 
-        <nav className="flex items-center gap-6 text-sm text-slate-600">
+        <nav className="hidden items-center gap-6 text-sm text-slate-600 sm:flex">
           <Link href="/templates" className="hover:text-slate-900">
             Templates
           </Link>
@@ -46,11 +46,35 @@ export async function SiteHeader() {
                 href="/auth/signup"
                 eventName="sign_up_click"
                 eventParams={{ source: "site_header" }}
-                className="rounded-xl bg-brand-600 px-3 py-2 text-white"
+                className="whitespace-nowrap rounded-xl bg-brand-600 px-3 py-2 text-white"
               >
                 Sign up
               </TrackLink>
             </>
+          )}
+        </nav>
+
+        <nav className="flex min-w-0 items-center gap-2 text-sm text-slate-600 sm:hidden">
+          <Link href="/pricing" className="whitespace-nowrap px-1 py-2 hover:text-slate-900">
+            Pricing
+          </Link>
+
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="whitespace-nowrap rounded-lg bg-brand-600 px-3 py-2 font-medium text-white"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <TrackLink
+              href="/auth/signup"
+              eventName="sign_up_click"
+              eventParams={{ source: "site_header_mobile" }}
+              className="whitespace-nowrap rounded-lg bg-brand-600 px-3 py-2 font-medium text-white"
+            >
+              Sign up
+            </TrackLink>
           )}
         </nav>
       </div>
