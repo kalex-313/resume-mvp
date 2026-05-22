@@ -40,6 +40,35 @@ Every Monday, review:
 
 Escalate if there are repeated spikes from the same IP, country, user agent, or endpoint.
 
+## Security Warning Hygiene
+
+Run this after rotating keys, changing Vercel/Supabase settings, or seeing dashboard warnings:
+
+```powershell
+npm run security:warnings
+```
+
+The check confirms:
+
+- Production homepage returns `200`.
+- Core browser security headers are present.
+- CSP still allows Stripe, Google Analytics, Vercel Analytics, Supabase, Gemini/OpenRouter, and Cloudflare Turnstile.
+- `/api/health/supabase` rejects requests without `CRON_SECRET`.
+- Vercel still has two Supabase keep-alive cron runs.
+
+Dashboard checks that still need manual review:
+
+- Vercel Project > Environment Variables: secrets should not use `NEXT_PUBLIC_`, and any "looks like a secret" warning should be resolved by rotating the value if it was exposed.
+- Vercel Firewall: `/api/auth/` rate-limit rule should remain active.
+- Supabase Security Advisor: keep `Errors = 0`; fix any new public `SECURITY DEFINER`, missing RLS, or leaked-password warning where the plan supports it.
+
+Latest ROL-10 check on 2026-05-22:
+
+- Production security headers: clean.
+- Supabase keep-alive endpoint: protected with `401` for unauthenticated requests.
+- Vercel cron config: two daily keep-alive runs.
+- Known manual note: Supabase leaked-password protection may require a paid Supabase plan; leave documented if it appears as the only remaining warning.
+
 ## Supabase Account Protection
 
 Do this in the Supabase Dashboard account settings:
