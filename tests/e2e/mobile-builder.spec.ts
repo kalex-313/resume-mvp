@@ -26,7 +26,7 @@ test.describe("mobile builder UX", () => {
     await page.getByPlaceholder("Full name").fill(fullName);
     await page
       .getByPlaceholder("Excel, Customer Service, Inventory Control")
-      .fill("Excel, Customer Service\nInventory Control");
+      .fill("Excel; Customer Service; Inventory Control");
 
     await page.getByRole("button", { name: "Preview" }).click();
     await expect(page.locator("#resume-preview-export")).toBeVisible();
