@@ -9,6 +9,7 @@ Use this file as the source of truth for free or low-cost directory submissions.
 - Prefer free listings first.
 - Avoid paid placements unless there is clear revenue or signup evidence.
 - Use the canonical website URL: `https://www.rolearc.xyz`
+- Track real outcomes in `DIRECTORY_GROWTH_TRACKING.md`, not only listing status.
 - When a directory allows editable links, use UTM tracking:
   - Product Hunt: `https://www.rolearc.xyz/?utm_source=producthunt&utm_medium=directory&utm_campaign=launch`
   - SaaSHub: `https://www.rolearc.xyz/?utm_source=saashub&utm_medium=directory&utm_campaign=launch`
@@ -56,5 +57,6 @@ RoleArc focuses on practical resume writing and honest improvement. It does not 
 - Did the directory listing become public?
 - Did it send referral traffic in Vercel Analytics or Google Analytics?
 - Did referral traffic create signups?
+- Did referral traffic create resumes or upgrade clicks?
 - Did any listing need updated screenshots, logo, description, or pricing?
 - Is there enough evidence to try one more directory, or should effort move back to SEO/conversion?

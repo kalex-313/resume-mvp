@@ -21,6 +21,8 @@
 - Check Search Console queries with impressions but low click-through rate.
 - Check Vercel Analytics for the top landing pages and exits.
 - Check signup and upgrade events in analytics.
+- Check `FUNNEL_MONITORING.md` for signup to resume creation drop-offs.
+- Check `DIRECTORY_GROWTH_TRACKING.md` for Product Hunt, SaaSHub, AlternativeTo, and Futurepedia outcomes.
 - Check Vercel Firewall for blocked auth API traffic.
 - Check Supabase Auth logs for repeated failures.
 - Check Stripe webhook delivery health.
@@ -45,6 +47,7 @@
 ## Directory Follow-up Loop
 
 - Keep `DIRECTORY_SUBMISSIONS.md` updated after every submission, approval, rejection, or paid-listing decision.
+- Update `DIRECTORY_GROWTH_TRACKING.md` weekly with visits, signup clicks, signup successes, resume creations, and upgrade clicks.
 - Check only a small batch each week so directory work does not crowd out product and SEO improvements.
 - Use UTM links where the directory allows editing the website URL.
 - Prioritize Product Hunt, SaaSHub, Futurepedia, and AlternativeTo before trying more generic AI directories.
