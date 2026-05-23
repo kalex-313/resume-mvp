@@ -6,6 +6,7 @@ import { getUserPlan } from "@/lib/ai/quota";
 import { getResumeById } from "@/lib/resume-service";
 import { ResumeEditor } from "@/components/builder/resume-editor";
 import { QuotaBanner } from "@/components/common/quota-banner";
+import { TrackPageView } from "@/components/analytics/track-page-view";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,15 @@ export default async function BuilderPage({
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <TrackPageView
+        eventName="builder_view"
+        eventParams={{
+          plan,
+          template_id: resume.template_id || "professional-blue",
+          has_title: !!resume.title,
+          has_summary: !!resume.content_json?.summary,
+        }}
+      />
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
         <div className="mb-4">

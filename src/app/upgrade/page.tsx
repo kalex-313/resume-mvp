@@ -3,6 +3,8 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { CheckoutForm } from "@/components/pricing/checkout-form";
 import { createClient } from "@/lib/supabase/server";
+import { TrackLink } from "@/components/analytics/track-link";
+import { TrackPageView } from "@/components/analytics/track-page-view";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +15,12 @@ export default async function UpgradePage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <TrackPageView
+        eventName="upgrade_page_view"
+        eventParams={{
+          signed_in: !!user,
+        }}
+      />
       <SiteHeader />
 
       <main className="mx-auto max-w-3xl px-6 py-16 text-center">
@@ -57,18 +65,22 @@ export default async function UpgradePage() {
             <CheckoutForm />
           ) : (
             <div className="flex flex-wrap justify-center gap-3">
-              <Link
+              <TrackLink
                 href="/auth/signup"
+                eventName="sign_up_click"
+                eventParams={{ source: "upgrade_page" }}
                 className="rounded-xl bg-brand-600 px-6 py-3 text-white hover:opacity-95"
               >
                 Create account first
-              </Link>
-              <Link
+              </TrackLink>
+              <TrackLink
                 href="/auth/login"
+                eventName="login_click"
+                eventParams={{ source: "upgrade_page" }}
                 className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-slate-700 hover:bg-slate-50"
               >
                 Log in to continue
-              </Link>
+              </TrackLink>
             </div>
           )}
         </div>

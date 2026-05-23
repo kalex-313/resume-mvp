@@ -5,7 +5,8 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { DeleteResumeButton } from "@/components/dashboard/delete-resume-button";
 import { OnboardingCard } from "@/components/dashboard/onboarding-card";
-import { createResumeAction } from "./actions";
+import { CreateResumeButton } from "@/components/dashboard/create-resume-button";
+import { TrackPageView } from "@/components/analytics/track-page-view";
 import type { ResumeRecord } from "@/types/resume";
 
 function formatUpdatedAt(value?: string) {
@@ -40,6 +41,13 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
+      <TrackPageView
+        eventName="dashboard_view"
+        eventParams={{
+          resume_count: safeResumes.length,
+          has_resumes: safeResumes.length > 0,
+        }}
+      />
       <SiteHeader />
 
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
@@ -53,14 +61,7 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <form action={createResumeAction}>
-            <button
-              type="submit"
-              className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-medium text-white"
-            >
-              Create New Resume
-            </button>
-          </form>
+          <CreateResumeButton />
         </div>
 
         <OnboardingCard hasResumes={safeResumes.length > 0} />
@@ -74,14 +75,9 @@ export default async function DashboardPage() {
               Start your first resume to see it here.
             </p>
 
-            <form action={createResumeAction} className="mt-5">
-              <button
-                type="submit"
-                className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-medium text-white"
-              >
-                Create your first resume
-              </button>
-            </form>
+            <div className="mt-5">
+              <CreateResumeButton label="Create your first resume" source="dashboard_empty_state" />
+            </div>
           </div>
         ) : (
           <div className="grid gap-4">
