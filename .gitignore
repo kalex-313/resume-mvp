@@ -11,6 +11,7 @@ pnpm-debug.log*
 .env.e2e
 .DS_Store
 Thumbs.db
+tsconfig.tsbuildinfo
 .vercel
 playwright-report/
 test-results/

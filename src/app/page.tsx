@@ -7,6 +7,7 @@ import { TemplateCatalogGrid } from "@/components/templates/template-catalog";
 import { SocialProofStrip } from "@/components/marketing/social-proof-strip";
 import { BeforeAfterDemo } from "@/components/marketing/before-after-demo";
 import { PricingComparison } from "@/components/marketing/pricing-comparison";
+import { HeroLiveDemo } from "@/components/marketing/hero-live-demo";
 import { TrackLink } from "@/components/analytics/track-link";
 
 export const dynamic = "force-dynamic";
@@ -77,12 +78,12 @@ export default async function HomePage() {
                 {user ? "Open Dashboard" : "Create My Resume Free"}
               </TrackLink>
               <TrackLink
-                href="/pricing"
-                eventName="pricing_compare_click"
+                href="/ai-resume-builder"
+                eventName="demo_example_click"
                 eventParams={{ source: "home_hero" }}
                 className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-slate-700"
               >
-                Compare Free vs Pro
+                See AI rewrite example
               </TrackLink>
             </div>
 
@@ -106,31 +107,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="rounded-2xl bg-slate-50 p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-brand-600">Example workflow</p>
-              <div className="mt-4 space-y-4">
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-900">1. Pick a template</p>
-                  <p className="mt-1 text-sm text-slate-600">
-                    Choose ATS, minimal, business, or premium styles before editing.
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-900">2. Rewrite weak wording</p>
-                  <p className="mt-1 text-sm text-slate-600">
-                    Use AI to sharpen summaries and bullet points into resume-ready language.
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-900">3. Export polished PDF</p>
-                  <p className="mt-1 text-sm text-slate-600">
-                    Turn the final version into a professional downloadable resume.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <HeroLiveDemo isLoggedIn={!!user} />
         </section>
 
         <section className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

@@ -2,6 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes rolearc-demo-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  55%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes rolearc-demo-text {
+  0% {
+    opacity: 0.35;
+  }
+  30%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.rolearc-demo-scan {
+  animation: rolearc-demo-scan 3.8s ease-in-out infinite;
+}
+
+.rolearc-demo-text {
+  animation: rolearc-demo-text 3.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rolearc-demo-scan,
+  .rolearc-demo-text {
+    animation: none;
+  }
+}
+
 html, body {
   margin: 0;
   padding: 0;
