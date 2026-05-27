@@ -79,6 +79,27 @@ Do this in the Supabase Dashboard account settings:
 4. Keep the service-role key only in Vercel environment variables and local `.env.local`.
 5. Rotate keys immediately if a key is pasted into chat, GitHub, screenshots, or public docs.
 
+## Supabase Data API Grants
+
+Supabase is changing public-schema Data API exposure:
+
+- New projects default to explicit grants from 2026-05-30.
+- Existing projects keep current behavior until 2026-10-30.
+- After enforcement, any new table created in `public` needs explicit grants before PostgREST, GraphQL, or `supabase-js` can access it.
+
+RoleArc's current app tables should keep working because existing grants remain in place, but new tables should not rely on automatic exposure. Use this SQL file after creating or changing public app tables:
+
+```sql
+supabase/schema_phase16_data_api_grants.sql
+```
+
+Keep the pattern conservative:
+
+- Grant app tables to `authenticated` and `service_role` only when the app needs them.
+- Avoid granting app data tables to `anon` unless the table is intentionally public.
+- Keep RLS enabled; grants decide whether the table is reachable, while RLS decides which rows are visible.
+- Keep `public.handle_new_user_profile()` revoked from `public`, `anon`, and `authenticated`.
+
 ## Free App-Data Backup
 
 This repo includes a local backup helper for public app tables:
