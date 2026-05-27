@@ -32,6 +32,18 @@ grant select, insert
 on table public.keep_alive_events
 to service_role;
 
+-- Keep Security Advisor clean while keeping client access denied. The
+-- service_role bypasses RLS for the protected cron route.
+drop policy if exists "No public keep alive access" on public.keep_alive_events;
+drop policy if exists "No client keep alive access" on public.keep_alive_events;
+
+create policy "No client keep alive access"
+on public.keep_alive_events
+for all
+to anon, authenticated
+using (false)
+with check (false);
+
 -- Identity/serial sequences need explicit privileges when exposed through the
 -- Data API. This currently matters for keep_alive_events and future identity
 -- columns.

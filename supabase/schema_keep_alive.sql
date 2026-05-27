@@ -7,6 +7,14 @@ create table if not exists public.keep_alive_events (
 alter table public.keep_alive_events enable row level security;
 
 drop policy if exists "No public keep alive access" on public.keep_alive_events;
+drop policy if exists "No client keep alive access" on public.keep_alive_events;
+
+create policy "No client keep alive access"
+on public.keep_alive_events
+for all
+to anon, authenticated
+using (false)
+with check (false);
 
 create index if not exists idx_keep_alive_events_checked_at
 on public.keep_alive_events(checked_at desc);
