@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { TrackLink } from "@/components/analytics/track-link";
+import { SampleResumePreview } from "@/components/marketing/sample-resume-preview";
 
 type LandingPageProps = {
   eyebrow: string;
@@ -146,6 +147,43 @@ export function SeoLandingPage({
               </ul>
             </article>
           ))}
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-12">
+          <div className="mb-6">
+            <p className="text-sm font-medium text-brand-600">How RoleArc works</p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+              From rough notes to a cleaner resume draft
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                title: "Add your real experience",
+                body: "Start with honest notes from your work, school, projects, or volunteer experience.",
+              },
+              {
+                title: "Improve weak wording",
+                body: "Use AI rewrite to make vague bullets clearer while keeping the facts under your control.",
+              },
+              {
+                title: "Preview and export",
+                body: "Review the layout, keep editing, and export a polished PDF when the resume is ready.",
+              },
+            ].map((step, index) => (
+              <div key={step.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-700">
+                  {index + 1}
+                </span>
+                <h3 className="mt-4 font-semibold text-slate-900">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-12">
+          <SampleResumePreview source="seo_sample_resume_preview" />
         </section>
 
         <section className="mx-auto max-w-4xl px-6 pb-16">

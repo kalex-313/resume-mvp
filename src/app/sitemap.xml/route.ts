@@ -1,86 +1,47 @@
-const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.rolearc.xyz/</loc>
-    <lastmod>2026-05-10</lastmod>
+const CONTENT_LASTMOD = "2026-05-29";
+
+const urls = [
+  { path: "/", priority: "1.0" },
+  { path: "/ai-resume-builder", priority: "0.9" },
+  { path: "/ats-resume-templates", priority: "0.9" },
+  { path: "/resume-builder-canada", priority: "0.85" },
+  { path: "/student-resume-builder", priority: "0.85" },
+  { path: "/career-change-resume-builder", priority: "0.85" },
+  { path: "/entry-level-resume-builder", priority: "0.85" },
+  { path: "/resume-pdf-export", priority: "0.85" },
+  { path: "/templates", priority: "0.85" },
+  { path: "/pricing", priority: "0.8" },
+  { path: "/contact", priority: "0.5" },
+  { path: "/privacy", priority: "0.3" },
+  { path: "/terms", priority: "0.3" },
+];
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function renderUrl(path: string, priority: string) {
+  const loc = `https://www.rolearc.xyz${path === "/" ? "/" : path}`;
+
+  return `  <url>
+    <loc>${escapeXml(loc)}</loc>
+    <lastmod>${CONTENT_LASTMOD}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/ai-resume-builder</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/ats-resume-templates</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/resume-builder-canada</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/student-resume-builder</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/career-change-resume-builder</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/entry-level-resume-builder</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/resume-pdf-export</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/templates</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/pricing</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/contact</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/privacy</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.rolearc.xyz/terms</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.3</priority>
-  </url>
-</urlset>`;
+    <priority>${priority}</priority>
+  </url>`;
+}
 
 export function GET() {
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map((url) => renderUrl(url.path, url.priority)).join("\n")}
+</urlset>`;
+
   return new Response(sitemapXml, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",

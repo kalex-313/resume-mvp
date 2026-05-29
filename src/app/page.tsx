@@ -8,6 +8,7 @@ import { SocialProofStrip } from "@/components/marketing/social-proof-strip";
 import { BeforeAfterDemo } from "@/components/marketing/before-after-demo";
 import { PricingComparison } from "@/components/marketing/pricing-comparison";
 import { HeroLiveDemo } from "@/components/marketing/hero-live-demo";
+import { SampleResumePreview } from "@/components/marketing/sample-resume-preview";
 import { TrackLink } from "@/components/analytics/track-link";
 
 export const dynamic = "force-dynamic";
@@ -137,6 +138,10 @@ export default async function HomePage() {
 
         <section className="mt-10">
           <SocialProofStrip />
+        </section>
+
+        <section className="mt-14">
+          <SampleResumePreview isLoggedIn={!!user} source="home_sample_resume_preview" />
         </section>
 
         <section className="mt-14">

@@ -21,6 +21,8 @@ test.describe("mobile conversion flow", () => {
     await expect(page.getByRole("banner").getByRole("link", { name: "Pricing" })).toBeVisible();
     await expect(page.getByRole("region", { name: "RoleArc live resume rewrite demo" })).toBeVisible();
     await expect(page.getByText("Supported 40+ customer inquiries per day")).toBeVisible();
+    await expect(page.getByRole("region", { name: "Sample RoleArc resume preview" })).toBeVisible();
+    await expect(page.getByText("Maya Chen")).toBeVisible();
 
     const signup = page.getByRole("banner").getByRole("link", { name: "Sign up" });
     await expect(signup).toBeVisible();
