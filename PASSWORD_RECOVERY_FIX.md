@@ -27,7 +27,7 @@ For browser tests, run the app with the following synthetic configuration only:
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://recovery-test.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=synthetic-test-key
-NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3010
+NEXT_PUBLIC_SITE_URL=http://localhost:3010
 ```
 
-Then run `E2E_BASE_URL=http://127.0.0.1:3010 npx playwright test tests/e2e/password-recovery-ui.spec.ts`. The UI suite intercepts Auth requests and only submits a synthetic password to mocks. It skips non-local targets; do not configure it against a real database.
+Build and start this synthetic app on `localhost:3010`. Then run `E2E_BASE_URL=http://localhost:3010 npx playwright test tests/e2e/password-recovery-routes.spec.ts tests/e2e/password-recovery-ui.spec.ts`. The UI suite intercepts Auth requests and only submits a synthetic password to mocks. It skips non-local targets; do not configure it against a real database.

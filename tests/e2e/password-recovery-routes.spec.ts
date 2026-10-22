@@ -8,7 +8,9 @@ for (const query of ["", "?token_hash=synthetic&type=signup", "?type=recovery"])
     expect(response.status()).toBe(307);
     expect(response.headers().location).toBe(`${baseURL}/auth/reset-password?error=invalid_link`);
     expect(response.headers()["cache-control"]).toContain("no-store");
-    expect(response.headers()["referrer-policy"]).toBe("no-referrer");
+    // Next may append the route policy to the global policy. Browsers use the
+    // last recognized value, so verify the effective policy remains private.
+    expect(response.headers()["referrer-policy"].split(",").at(-1)?.trim()).toBe("no-referrer");
   });
 }
 
